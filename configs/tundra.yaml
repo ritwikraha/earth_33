@@ -1,0 +1,46 @@
+map:
+  width: 80
+  height: 60
+  terrain_weights:
+    PLAINS: 0.10
+    FOREST: 0.05
+    DESERT: 0.00
+    TUNDRA: 0.55
+    MOUNTAIN: 0.20
+    WATER: 0.08
+    SWAMP: 0.02
+  num_lakes: 2
+  num_rivers: 1
+
+sim:
+  dt_hours: 1.0
+  max_steps: 500
+  observation_radius: 3
+  start_hour: 8
+  start_day: 340  # winter
+
+climate:
+  terrain_base_temp:
+    TUNDRA: -10.0
+    MOUNTAIN: -15.0
+    PLAINS: -2.0
+    FOREST: -5.0
+    WATER: 0.0
+    SWAMP: -3.0
+    DESERT: 5.0
+  seasonal_amp:
+    TUNDRA: 18.0
+    MOUNTAIN: 15.0
+    PLAINS: 12.0
+
+physiology:
+  initial_hydration: 80.0
+  initial_energy: 85.0
+  initial_core_temp: 37.0
+
+agent:
+  type: heuristic
+
+render:
+  cell_size: 10
+  fps: 30

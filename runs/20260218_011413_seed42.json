@@ -1,0 +1,2288 @@
+{
+  "meta": {
+    "version": "0.1",
+    "seed": 42
+  },
+  "config": {
+    "map": {
+      "width": 80,
+      "height": 60,
+      "terrain_weights": {
+        "PLAINS": 0.3,
+        "FOREST": 0.25,
+        "DESERT": 0.1,
+        "TUNDRA": 0.05,
+        "MOUNTAIN": 0.1,
+        "WATER": 0.1,
+        "SWAMP": 0.1
+      },
+      "num_lakes": 3,
+      "num_rivers": 2,
+      "elevation_octaves": 4,
+      "elevation_scale": 0.05
+    },
+    "sim": {
+      "dt_hours": 1.0,
+      "max_steps": 500,
+      "observation_radius": 3,
+      "start_hour": 6,
+      "start_day": 80
+    },
+    "climate": {
+      "lapse_rate": 6.5,
+      "diurnal_amp": {
+        "DESERT": 10.0,
+        "PLAINS": 6.0,
+        "FOREST": 4.0,
+        "TUNDRA": 5.0,
+        "MOUNTAIN": 7.0,
+        "WATER": 3.0,
+        "SWAMP": 4.0
+      },
+      "seasonal_amp": {
+        "DESERT": 8.0,
+        "PLAINS": 10.0,
+        "FOREST": 10.0,
+        "TUNDRA": 15.0,
+        "MOUNTAIN": 12.0,
+        "WATER": 6.0,
+        "SWAMP": 8.0
+      },
+      "terrain_base_temp": {
+        "DESERT": 30.0,
+        "PLAINS": 18.0,
+        "FOREST": 15.0,
+        "TUNDRA": -5.0,
+        "MOUNTAIN": 8.0,
+        "WATER": 16.0,
+        "SWAMP": 20.0
+      },
+      "temp_noise_sigma": 1.0
+    },
+    "physiology": {
+      "initial_hydration": 80.0,
+      "initial_energy": 80.0,
+      "initial_core_temp": 37.0,
+      "initial_fatigue": 10.0,
+      "initial_injury": 0.0,
+      "initial_infection": 0.0,
+      "hydration_base_drain": 0.8,
+      "energy_base_drain": 0.6,
+      "fatigue_base_gain": 0.7,
+      "rest_fatigue_recovery": 4.0,
+      "injury_recovery_rate": 0.2,
+      "thermal_drift_k": 0.008,
+      "death_hydration": 0.0,
+      "death_energy": 0.0,
+      "death_core_temp_low": 30.0,
+      "death_core_temp_high": 42.0,
+      "death_injury": 100.0,
+      "death_infection": 100.0
+    },
+    "agent": {
+      "type": "heuristic",
+      "llm_provider": "openai",
+      "llm_model": "gpt-4o-mini",
+      "llm_max_retries": 2,
+      "llm_temperature": 0.7
+    },
+    "render": {
+      "cell_size": 10,
+      "fps": 30,
+      "trail_length": 50,
+      "hud_width": 280
+    }
+  },
+  "steps": [
+    {
+      "t": 0,
+      "time": {
+        "day": 80,
+        "hour": 6
+      },
+      "agent": {
+        "pos": {
+          "x": 41,
+          "y": 46
+        },
+        "hydration": 78.4,
+        "energy": 78.8,
+        "core_temp_c": 36.9,
+        "fatigue": 11.4,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 1,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "FOREST",
+        "air_temp_c": 13.4,
+        "water_availability": 0.12,
+        "vegetation_biomass": 0.54
+      },
+      "action": {
+        "action": "MOVE_E"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -1.5600000000000003,
+          "energy": -1.1700000000000002,
+          "fatigue": 1.365,
+          "core_temp": -0.05659884198032229
+        }
+      }
+    },
+    {
+      "t": 1,
+      "time": {
+        "day": 80,
+        "hour": 7
+      },
+      "agent": {
+        "pos": {
+          "x": 42,
+          "y": 46
+        },
+        "hydration": 76.9,
+        "energy": 77.7,
+        "core_temp_c": 36.9,
+        "fatigue": 12.7,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 2,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "FOREST",
+        "air_temp_c": 13.2,
+        "water_availability": 0.12,
+        "vegetation_biomass": 0.29
+      },
+      "action": {
+        "action": "MOVE_E"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -1.5600000000000003,
+          "energy": -1.1700000000000002,
+          "fatigue": 1.365,
+          "core_temp": -0.05704631144535779
+        }
+      }
+    },
+    {
+      "t": 2,
+      "time": {
+        "day": 80,
+        "hour": 8
+      },
+      "agent": {
+        "pos": {
+          "x": 43,
+          "y": 46
+        },
+        "hydration": 75.3,
+        "energy": 76.5,
+        "core_temp_c": 36.8,
+        "fatigue": 14.1,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 3,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "FOREST",
+        "air_temp_c": 15.3,
+        "water_availability": 0.12,
+        "vegetation_biomass": 0.63
+      },
+      "action": {
+        "action": "MOVE_E"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -1.5600000000000003,
+          "energy": -1.1700000000000002,
+          "fatigue": 1.365,
+          "core_temp": -0.05182468628711348
+        }
+      }
+    },
+    {
+      "t": 3,
+      "time": {
+        "day": 80,
+        "hour": 9
+      },
+      "agent": {
+        "pos": {
+          "x": 44,
+          "y": 46
+        },
+        "hydration": 73.8,
+        "energy": 75.3,
+        "core_temp_c": 36.8,
+        "fatigue": 15.5,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 4,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "FOREST",
+        "air_temp_c": 17.5,
+        "water_availability": 0.09,
+        "vegetation_biomass": 0.75
+      },
+      "action": {
+        "action": "MOVE_E"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -1.5600000000000003,
+          "energy": -1.1700000000000002,
+          "fatigue": 1.365,
+          "core_temp": -0.046499576537882656
+        }
+      }
+    },
+    {
+      "t": 4,
+      "time": {
+        "day": 80,
+        "hour": 10
+      },
+      "agent": {
+        "pos": {
+          "x": 45,
+          "y": 46
+        },
+        "hydration": 72.2,
+        "energy": 74.1,
+        "core_temp_c": 36.6,
+        "fatigue": 16.8,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 5,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "FOREST",
+        "air_temp_c": 15.0,
+        "water_availability": 0.1,
+        "vegetation_biomass": 0.68
+      },
+      "action": {
+        "action": "MOVE_E"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -1.5600000000000003,
+          "energy": -1.1700000000000002,
+          "fatigue": 1.365,
+          "core_temp": -0.17394065068068623
+        }
+      }
+    },
+    {
+      "t": 5,
+      "time": {
+        "day": 80,
+        "hour": 11
+      },
+      "agent": {
+        "pos": {
+          "x": 46,
+          "y": 46
+        },
+        "hydration": 70.6,
+        "energy": 73.0,
+        "core_temp_c": 36.6,
+        "fatigue": 18.2,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 6,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "FOREST",
+        "air_temp_c": 13.4,
+        "water_availability": 0.09,
+        "vegetation_biomass": 0.27
+      },
+      "action": {
+        "action": "MOVE_E"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -1.5600000000000003,
+          "energy": -1.1700000000000002,
+          "fatigue": 1.365,
+          "core_temp": -0.05572189255959773
+        }
+      }
+    },
+    {
+      "t": 6,
+      "time": {
+        "day": 80,
+        "hour": 12
+      },
+      "agent": {
+        "pos": {
+          "x": 47,
+          "y": 46
+        },
+        "hydration": 68.8,
+        "energy": 71.8,
+        "core_temp_c": 36.5,
+        "fatigue": 19.6,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 7,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "DESERT",
+        "air_temp_c": 34.0,
+        "water_availability": 0.0,
+        "vegetation_biomass": 0.39
+      },
+      "action": {
+        "action": "MOVE_E"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -1.8764227661039379,
+          "energy": -1.1700000000000002,
+          "fatigue": 1.365,
+          "core_temp": -0.020824667713678593
+        }
+      }
+    },
+    {
+      "t": 7,
+      "time": {
+        "day": 80,
+        "hour": 13
+      },
+      "agent": {
+        "pos": {
+          "x": 47,
+          "y": 46
+        },
+        "hydration": 67.2,
+        "energy": 71.0,
+        "core_temp_c": 36.5,
+        "fatigue": 20.5,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 8,
+        "has_shelter": true
+      },
+      "local": {
+        "terrain": "DESERT",
+        "air_temp_c": 35.1,
+        "water_availability": 0.0,
+        "vegetation_biomass": 0.39
+      },
+      "action": {
+        "action": "BUILD_SHELTER"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -1.5312768617442714,
+          "energy": -0.84,
+          "fatigue": 0.9799999999999999,
+          "core_temp": -0.0033517982423807435
+        }
+      }
+    },
+    {
+      "t": 8,
+      "time": {
+        "day": 80,
+        "hour": 14
+      },
+      "agent": {
+        "pos": {
+          "x": 48,
+          "y": 46
+        },
+        "hydration": 65.3,
+        "energy": 69.7,
+        "core_temp_c": 36.5,
+        "fatigue": 22.0,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 9,
+        "has_shelter": true
+      },
+      "local": {
+        "terrain": "DESERT",
+        "air_temp_c": 33.7,
+        "water_availability": 0.0,
+        "vegetation_biomass": 0.22
+      },
+      "action": {
+        "action": "MOVE_E"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -1.978737466473967,
+          "energy": -1.2599999999999998,
+          "fatigue": 1.4699999999999998,
+          "core_temp": -0.006719935784708161
+        }
+      }
+    },
+    {
+      "t": 9,
+      "time": {
+        "day": 80,
+        "hour": 15
+      },
+      "agent": {
+        "pos": {
+          "x": 48,
+          "y": 46
+        },
+        "hydration": 63.9,
+        "energy": 73.2,
+        "core_temp_c": 36.5,
+        "fatigue": 22.9,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 10,
+        "has_shelter": true
+      },
+      "local": {
+        "terrain": "DESERT",
+        "air_temp_c": 33.5,
+        "water_availability": 0.0,
+        "vegetation_biomass": 0.11
+      },
+      "action": {
+        "action": "FORAGE"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "energy_gain": 4.253850939410557,
+          "hydration": -1.3181873059867468,
+          "energy": -0.78,
+          "fatigue": 0.9099999999999999,
+          "core_temp": -0.007320312753441476
+        }
+      }
+    },
+    {
+      "t": 10,
+      "time": {
+        "day": 80,
+        "hour": 16
+      },
+      "agent": {
+        "pos": {
+          "x": 49,
+          "y": 46
+        },
+        "hydration": 62.3,
+        "energy": 71.9,
+        "core_temp_c": 36.4,
+        "fatigue": 24.4,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 11,
+        "has_shelter": true
+      },
+      "local": {
+        "terrain": "TUNDRA",
+        "air_temp_c": -0.2,
+        "water_availability": 0.05,
+        "vegetation_biomass": 0.0
+      },
+      "action": {
+        "action": "MOVE_E"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -1.6799999999999997,
+          "energy": -1.2599999999999998,
+          "fatigue": 1.4699999999999998,
+          "core_temp": -0.08806193434103987
+        }
+      }
+    },
+    {
+      "t": 11,
+      "time": {
+        "day": 80,
+        "hour": 17
+      },
+      "agent": {
+        "pos": {
+          "x": 50,
+          "y": 46
+        },
+        "hydration": 60.8,
+        "energy": 70.8,
+        "core_temp_c": 36.3,
+        "fatigue": 25.6,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 12,
+        "has_shelter": true
+      },
+      "local": {
+        "terrain": "TUNDRA",
+        "air_temp_c": -0.9,
+        "water_availability": 0.05,
+        "vegetation_biomass": 0.0
+      },
+      "action": {
+        "action": "MOVE_E"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -1.44,
+          "energy": -1.0799999999999998,
+          "fatigue": 1.2599999999999998,
+          "core_temp": -0.08963284219445425
+        }
+      }
+    },
+    {
+      "t": 12,
+      "time": {
+        "day": 80,
+        "hour": 18
+      },
+      "agent": {
+        "pos": {
+          "x": 51,
+          "y": 46
+        },
+        "hydration": 59.4,
+        "energy": 69.8,
+        "core_temp_c": 36.2,
+        "fatigue": 26.9,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 13,
+        "has_shelter": true
+      },
+      "local": {
+        "terrain": "TUNDRA",
+        "air_temp_c": -3.0,
+        "water_availability": 0.04,
+        "vegetation_biomass": 0.32
+      },
+      "action": {
+        "action": "MOVE_E"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": true,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -1.44,
+          "energy": -1.0799999999999998,
+          "fatigue": 1.2599999999999998,
+          "core_temp": -0.09440706826827601
+        }
+      }
+    },
+    {
+      "t": 13,
+      "time": {
+        "day": 80,
+        "hour": 19
+      },
+      "agent": {
+        "pos": {
+          "x": 51,
+          "y": 46
+        },
+        "hydration": 58.3,
+        "energy": 75.4,
+        "core_temp_c": 36.1,
+        "fatigue": 27.8,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 14,
+        "has_shelter": true
+      },
+      "local": {
+        "terrain": "TUNDRA",
+        "air_temp_c": -4.8,
+        "water_availability": 0.04,
+        "vegetation_biomass": 0.22
+      },
+      "action": {
+        "action": "FORAGE"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "energy_gain": 6.399253432870278,
+          "hydration": -1.04,
+          "energy": -0.78,
+          "fatigue": 0.9099999999999999,
+          "core_temp": -0.0984340628202274
+        }
+      }
+    },
+    {
+      "t": 14,
+      "time": {
+        "day": 80,
+        "hour": 20
+      },
+      "agent": {
+        "pos": {
+          "x": 51,
+          "y": 45
+        },
+        "hydration": 56.9,
+        "energy": 74.3,
+        "core_temp_c": 36.1,
+        "fatigue": 29.1,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 15,
+        "has_shelter": true
+      },
+      "local": {
+        "terrain": "DESERT",
+        "air_temp_c": 19.5,
+        "water_availability": 0.0,
+        "vegetation_biomass": 0.18
+      },
+      "action": {
+        "action": "MOVE_N"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -1.44,
+          "energy": -1.0799999999999998,
+          "fatigue": 1.2599999999999998,
+          "core_temp": -0.04003544066620032
+        }
+      }
+    },
+    {
+      "t": 15,
+      "time": {
+        "day": 80,
+        "hour": 21
+      },
+      "agent": {
+        "pos": {
+          "x": 51,
+          "y": 44
+        },
+        "hydration": 55.2,
+        "energy": 73.0,
+        "core_temp_c": 36.1,
+        "fatigue": 30.5,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 16,
+        "has_shelter": true
+      },
+      "local": {
+        "terrain": "DESERT",
+        "air_temp_c": 18.6,
+        "water_availability": 0.0,
+        "vegetation_biomass": 0.44
+      },
+      "action": {
+        "action": "MOVE_N"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -1.6799999999999997,
+          "energy": -1.2599999999999998,
+          "fatigue": 1.4699999999999998,
+          "core_temp": -0.04197084909775672
+        }
+      }
+    },
+    {
+      "t": 16,
+      "time": {
+        "day": 80,
+        "hour": 22
+      },
+      "agent": {
+        "pos": {
+          "x": 51,
+          "y": 43
+        },
+        "hydration": 53.5,
+        "energy": 63.5,
+        "core_temp_c": 36.0,
+        "fatigue": 32.0,
+        "injury": 22.6,
+        "infection": 0.7,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 17,
+        "has_shelter": true
+      },
+      "local": {
+        "terrain": "FOREST",
+        "air_temp_c": 8.1,
+        "water_availability": 0.08,
+        "vegetation_biomass": 0.89
+      },
+      "action": {
+        "action": "MOVE_N"
+      },
+      "events": {
+        "encounter": "True",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -1.6799999999999997,
+          "energy": -1.2599999999999998,
+          "fatigue": 1.4699999999999998,
+          "core_temp": -0.06705826086509366
+        }
+      }
+    },
+    {
+      "t": 17,
+      "time": {
+        "day": 80,
+        "hour": 23
+      },
+      "agent": {
+        "pos": {
+          "x": 51,
+          "y": 43
+        },
+        "hydration": 52.5,
+        "energy": 70.3,
+        "core_temp_c": 35.9,
+        "fatigue": 32.9,
+        "injury": 46.1,
+        "infection": 4.3,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 18,
+        "has_shelter": true
+      },
+      "local": {
+        "terrain": "FOREST",
+        "air_temp_c": 8.4,
+        "water_availability": 0.08,
+        "vegetation_biomass": 0.79
+      },
+      "action": {
+        "action": "FORAGE"
+      },
+      "events": {
+        "encounter": "True",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "energy_gain": 15.0,
+          "hydration": -1.04,
+          "energy": -0.78,
+          "fatigue": 0.9099999999999999,
+          "core_temp": -0.0663537969495924
+        }
+      }
+    },
+    {
+      "t": 18,
+      "time": {
+        "day": 81,
+        "hour": 0
+      },
+      "agent": {
+        "pos": {
+          "x": 51,
+          "y": 42
+        },
+        "hydration": 50.9,
+        "energy": 69.1,
+        "core_temp_c": 35.9,
+        "fatigue": 34.3,
+        "injury": 46.1,
+        "infection": 4.3,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 19,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "FOREST",
+        "air_temp_c": 8.5,
+        "water_availability": 0.08,
+        "vegetation_biomass": 0.62
+      },
+      "action": {
+        "action": "MOVE_N"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -1.5600000000000003,
+          "energy": -1.1700000000000002,
+          "fatigue": 1.365,
+          "core_temp": -0.06577305506555393
+        }
+      }
+    },
+    {
+      "t": 19,
+      "time": {
+        "day": 81,
+        "hour": 1
+      },
+      "agent": {
+        "pos": {
+          "x": 51,
+          "y": 42
+        },
+        "hydration": 49.9,
+        "energy": 80.8,
+        "core_temp_c": 35.8,
+        "fatigue": 35.2,
+        "injury": 46.1,
+        "infection": 4.3,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 20,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "FOREST",
+        "air_temp_c": 7.5,
+        "water_availability": 0.08,
+        "vegetation_biomass": 0.52
+      },
+      "action": {
+        "action": "FORAGE"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "energy_gain": 12.49229407220617,
+          "hydration": -1.04,
+          "energy": -0.78,
+          "fatigue": 0.9099999999999999,
+          "core_temp": -0.06800467832678991
+        }
+      }
+    },
+    {
+      "t": 20,
+      "time": {
+        "day": 81,
+        "hour": 2
+      },
+      "agent": {
+        "pos": {
+          "x": 51,
+          "y": 41
+        },
+        "hydration": 48.3,
+        "energy": 73.6,
+        "core_temp_c": 35.6,
+        "fatigue": 36.6,
+        "injury": 52.6,
+        "infection": 6.9,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 21,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "FOREST",
+        "air_temp_c": 8.5,
+        "water_availability": 0.09,
+        "vegetation_biomass": 0.55
+      },
+      "action": {
+        "action": "MOVE_N"
+      },
+      "events": {
+        "encounter": "True",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -1.5600000000000003,
+          "energy": -1.1700000000000002,
+          "fatigue": 1.365,
+          "core_temp": -0.21820878032115001
+        }
+      }
+    },
+    {
+      "t": 21,
+      "time": {
+        "day": 81,
+        "hour": 3
+      },
+      "agent": {
+        "pos": {
+          "x": 51,
+          "y": 40
+        },
+        "hydration": 46.8,
+        "energy": 72.4,
+        "core_temp_c": 35.5,
+        "fatigue": 37.9,
+        "injury": 52.6,
+        "infection": 6.9,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 22,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "FOREST",
+        "air_temp_c": 10.5,
+        "water_availability": 0.1,
+        "vegetation_biomass": 0.72
+      },
+      "action": {
+        "action": "MOVE_N"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -1.5600000000000003,
+          "energy": -1.1700000000000002,
+          "fatigue": 1.365,
+          "core_temp": -0.06031104463200753
+        }
+      }
+    },
+    {
+      "t": 22,
+      "time": {
+        "day": 81,
+        "hour": 4
+      },
+      "agent": {
+        "pos": {
+          "x": 51,
+          "y": 39
+        },
+        "hydration": 45.2,
+        "energy": 71.2,
+        "core_temp_c": 35.5,
+        "fatigue": 39.3,
+        "injury": 52.6,
+        "infection": 6.9,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 23,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "FOREST",
+        "air_temp_c": 11.6,
+        "water_availability": 0.11,
+        "vegetation_biomass": 0.67
+      },
+      "action": {
+        "action": "MOVE_N"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -1.5600000000000003,
+          "energy": -1.1700000000000002,
+          "fatigue": 1.365,
+          "core_temp": -0.057349096404633766
+        }
+      }
+    },
+    {
+      "t": 23,
+      "time": {
+        "day": 81,
+        "hour": 5
+      },
+      "agent": {
+        "pos": {
+          "x": 51,
+          "y": 38
+        },
+        "hydration": 43.7,
+        "energy": 70.1,
+        "core_temp_c": 35.4,
+        "fatigue": 40.7,
+        "injury": 52.6,
+        "infection": 6.9,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 24,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "FOREST",
+        "air_temp_c": 11.3,
+        "water_availability": 0.12,
+        "vegetation_biomass": 0.43
+      },
+      "action": {
+        "action": "MOVE_N"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": true,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -1.5600000000000003,
+          "energy": -1.1700000000000002,
+          "fatigue": 1.365,
+          "core_temp": -0.05792371906740704
+        }
+      }
+    },
+    {
+      "t": 24,
+      "time": {
+        "day": 81,
+        "hour": 6
+      },
+      "agent": {
+        "pos": {
+          "x": 51,
+          "y": 38
+        },
+        "hydration": 43.1,
+        "energy": 69.6,
+        "core_temp_c": 35.4,
+        "fatigue": 36.7,
+        "injury": 52.4,
+        "infection": 6.9,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 25,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "FOREST",
+        "air_temp_c": 12.6,
+        "water_availability": 0.12,
+        "vegetation_biomass": 0.43
+      },
+      "action": {
+        "action": "REST"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -0.5599999999999999,
+          "energy": -0.42,
+          "fatigue": -4.0,
+          "core_temp": -0.05470942391551864,
+          "injury": -0.2
+        }
+      }
+    },
+    {
+      "t": 25,
+      "time": {
+        "day": 81,
+        "hour": 7
+      },
+      "agent": {
+        "pos": {
+          "x": 51,
+          "y": 38
+        },
+        "hydration": 42.5,
+        "energy": 69.2,
+        "core_temp_c": 35.3,
+        "fatigue": 32.7,
+        "injury": 52.2,
+        "infection": 6.9,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 26,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "FOREST",
+        "air_temp_c": 13.8,
+        "water_availability": 0.12,
+        "vegetation_biomass": 0.43
+      },
+      "action": {
+        "action": "REST"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -0.5599999999999999,
+          "energy": -0.42,
+          "fatigue": -4.0,
+          "core_temp": -0.051720489175358965,
+          "injury": -0.2
+        }
+      }
+    },
+    {
+      "t": 26,
+      "time": {
+        "day": 81,
+        "hour": 8
+      },
+      "agent": {
+        "pos": {
+          "x": 51,
+          "y": 38
+        },
+        "hydration": 42.0,
+        "energy": 68.8,
+        "core_temp_c": 35.3,
+        "fatigue": 28.7,
+        "injury": 52.0,
+        "infection": 6.9,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 27,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "FOREST",
+        "air_temp_c": 16.4,
+        "water_availability": 0.11,
+        "vegetation_biomass": 0.43
+      },
+      "action": {
+        "action": "REST"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -0.5599999999999999,
+          "energy": -0.42,
+          "fatigue": -4.0,
+          "core_temp": -0.04545484936598156,
+          "injury": -0.2
+        }
+      }
+    },
+    {
+      "t": 27,
+      "time": {
+        "day": 81,
+        "hour": 9
+      },
+      "agent": {
+        "pos": {
+          "x": 51,
+          "y": 38
+        },
+        "hydration": 41.4,
+        "energy": 68.4,
+        "core_temp_c": 35.2,
+        "fatigue": 24.7,
+        "injury": 51.8,
+        "infection": 6.9,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 28,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "FOREST",
+        "air_temp_c": 15.7,
+        "water_availability": 0.12,
+        "vegetation_biomass": 0.43
+      },
+      "action": {
+        "action": "REST"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -0.5599999999999999,
+          "energy": -0.42,
+          "fatigue": -4.0,
+          "core_temp": -0.046849887869574496,
+          "injury": -0.2
+        }
+      }
+    },
+    {
+      "t": 28,
+      "time": {
+        "day": 81,
+        "hour": 10
+      },
+      "agent": {
+        "pos": {
+          "x": 51,
+          "y": 38
+        },
+        "hydration": 40.9,
+        "energy": 68.0,
+        "core_temp_c": 35.2,
+        "fatigue": 20.7,
+        "injury": 51.6,
+        "infection": 6.9,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 29,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "FOREST",
+        "air_temp_c": 16.7,
+        "water_availability": 0.11,
+        "vegetation_biomass": 0.43
+      },
+      "action": {
+        "action": "REST"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": true,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -0.5599999999999999,
+          "energy": -0.42,
+          "fatigue": -4.0,
+          "core_temp": -0.044389803518167854,
+          "injury": -0.2
+        }
+      }
+    },
+    {
+      "t": 29,
+      "time": {
+        "day": 81,
+        "hour": 11
+      },
+      "agent": {
+        "pos": {
+          "x": 51,
+          "y": 38
+        },
+        "hydration": 40.3,
+        "energy": 67.5,
+        "core_temp_c": 35.1,
+        "fatigue": 16.7,
+        "injury": 51.4,
+        "infection": 6.9,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 30,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "FOREST",
+        "air_temp_c": 15.6,
+        "water_availability": 0.12,
+        "vegetation_biomass": 0.43
+      },
+      "action": {
+        "action": "REST"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -0.5599999999999999,
+          "energy": -0.42,
+          "fatigue": -4.0,
+          "core_temp": -0.04702694187577884,
+          "injury": -0.2
+        }
+      }
+    },
+    {
+      "t": 30,
+      "time": {
+        "day": 81,
+        "hour": 12
+      },
+      "agent": {
+        "pos": {
+          "x": 51,
+          "y": 38
+        },
+        "hydration": 39.7,
+        "energy": 67.1,
+        "core_temp_c": 35.1,
+        "fatigue": 12.7,
+        "injury": 51.2,
+        "infection": 6.9,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 31,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "FOREST",
+        "air_temp_c": 17.7,
+        "water_availability": 0.1,
+        "vegetation_biomass": 0.43
+      },
+      "action": {
+        "action": "REST"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -0.5599999999999999,
+          "energy": -0.42,
+          "fatigue": -4.0,
+          "core_temp": -0.04183465027848847,
+          "injury": -0.2
+        }
+      }
+    },
+    {
+      "t": 31,
+      "time": {
+        "day": 81,
+        "hour": 13
+      },
+      "agent": {
+        "pos": {
+          "x": 51,
+          "y": 38
+        },
+        "hydration": 39.2,
+        "energy": 60.9,
+        "core_temp_c": 35.0,
+        "fatigue": 8.7,
+        "injury": 61.5,
+        "infection": 8.4,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 32,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "FOREST",
+        "air_temp_c": 17.1,
+        "water_availability": 0.11,
+        "vegetation_biomass": 0.43
+      },
+      "action": {
+        "action": "REST"
+      },
+      "events": {
+        "encounter": "True",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -0.5599999999999999,
+          "energy": -0.42,
+          "fatigue": -4.0,
+          "core_temp": -0.04317927721245702,
+          "injury": -0.2
+        }
+      }
+    },
+    {
+      "t": 32,
+      "time": {
+        "day": 81,
+        "hour": 14
+      },
+      "agent": {
+        "pos": {
+          "x": 51,
+          "y": 38
+        },
+        "hydration": 38.6,
+        "energy": 60.5,
+        "core_temp_c": 35.0,
+        "fatigue": 4.7,
+        "injury": 61.3,
+        "infection": 8.4,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 33,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "FOREST",
+        "air_temp_c": 17.1,
+        "water_availability": 0.11,
+        "vegetation_biomass": 0.43
+      },
+      "action": {
+        "action": "REST"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -0.5599999999999999,
+          "energy": -0.42,
+          "fatigue": -4.0,
+          "core_temp": -0.04308507547494869,
+          "injury": -0.2
+        }
+      }
+    },
+    {
+      "t": 33,
+      "time": {
+        "day": 81,
+        "hour": 15
+      },
+      "agent": {
+        "pos": {
+          "x": 51,
+          "y": 38
+        },
+        "hydration": 38.1,
+        "energy": 60.1,
+        "core_temp_c": 34.9,
+        "fatigue": 0.7,
+        "injury": 61.1,
+        "infection": 8.4,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 34,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "FOREST",
+        "air_temp_c": 16.3,
+        "water_availability": 0.12,
+        "vegetation_biomass": 0.43
+      },
+      "action": {
+        "action": "REST"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -0.5599999999999999,
+          "energy": -0.42,
+          "fatigue": -4.0,
+          "core_temp": -0.04481962082405859,
+          "injury": -0.2
+        }
+      }
+    },
+    {
+      "t": 34,
+      "time": {
+        "day": 81,
+        "hour": 16
+      },
+      "agent": {
+        "pos": {
+          "x": 51,
+          "y": 38
+        },
+        "hydration": 37.5,
+        "energy": 59.6,
+        "core_temp_c": 34.9,
+        "fatigue": 0.0,
+        "injury": 60.9,
+        "infection": 8.4,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 35,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "FOREST",
+        "air_temp_c": 15.0,
+        "water_availability": 0.12,
+        "vegetation_biomass": 0.43
+      },
+      "action": {
+        "action": "REST"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -0.5599999999999999,
+          "energy": -0.42,
+          "fatigue": -4.0,
+          "core_temp": -0.047756873752309296,
+          "injury": -0.2
+        }
+      }
+    },
+    {
+      "t": 35,
+      "time": {
+        "day": 81,
+        "hour": 17
+      },
+      "agent": {
+        "pos": {
+          "x": 51,
+          "y": 38
+        },
+        "hydration": 36.9,
+        "energy": 59.2,
+        "core_temp_c": 34.8,
+        "fatigue": 0.0,
+        "injury": 60.7,
+        "infection": 8.4,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 36,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "FOREST",
+        "air_temp_c": 14.0,
+        "water_availability": 0.12,
+        "vegetation_biomass": 0.43
+      },
+      "action": {
+        "action": "REST"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -0.5599999999999999,
+          "energy": -0.42,
+          "fatigue": -4.0,
+          "core_temp": -0.05019790610771065,
+          "injury": -0.2
+        }
+      }
+    },
+    {
+      "t": 36,
+      "time": {
+        "day": 81,
+        "hour": 18
+      },
+      "agent": {
+        "pos": {
+          "x": 51,
+          "y": 38
+        },
+        "hydration": 36.4,
+        "energy": 58.8,
+        "core_temp_c": 34.8,
+        "fatigue": 0.0,
+        "injury": 60.5,
+        "infection": 8.4,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 37,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "FOREST",
+        "air_temp_c": 12.5,
+        "water_availability": 0.12,
+        "vegetation_biomass": 0.43
+      },
+      "action": {
+        "action": "REST"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -0.5599999999999999,
+          "energy": -0.42,
+          "fatigue": -4.0,
+          "core_temp": -0.0536029380421604,
+          "injury": -0.2
+        }
+      }
+    },
+    {
+      "t": 37,
+      "time": {
+        "day": 81,
+        "hour": 19
+      },
+      "agent": {
+        "pos": {
+          "x": 51,
+          "y": 38
+        },
+        "hydration": 35.8,
+        "energy": 58.4,
+        "core_temp_c": 34.7,
+        "fatigue": 0.0,
+        "injury": 60.3,
+        "infection": 8.4,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 38,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "FOREST",
+        "air_temp_c": 11.6,
+        "water_availability": 0.12,
+        "vegetation_biomass": 0.43
+      },
+      "action": {
+        "action": "REST"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -0.5599999999999999,
+          "energy": -0.42,
+          "fatigue": -4.0,
+          "core_temp": -0.05559236081832696,
+          "injury": -0.2
+        }
+      }
+    },
+    {
+      "t": 38,
+      "time": {
+        "day": 81,
+        "hour": 20
+      },
+      "agent": {
+        "pos": {
+          "x": 51,
+          "y": 38
+        },
+        "hydration": 35.3,
+        "energy": 58.0,
+        "core_temp_c": 34.7,
+        "fatigue": 0.0,
+        "injury": 60.1,
+        "infection": 8.4,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 39,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "FOREST",
+        "air_temp_c": 10.5,
+        "water_availability": 0.12,
+        "vegetation_biomass": 0.43
+      },
+      "action": {
+        "action": "REST"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -0.5599999999999999,
+          "energy": -0.42,
+          "fatigue": -4.0,
+          "core_temp": -0.05816231106779963,
+          "injury": -0.2
+        }
+      }
+    },
+    {
+      "t": 39,
+      "time": {
+        "day": 81,
+        "hour": 21
+      },
+      "agent": {
+        "pos": {
+          "x": 51,
+          "y": 38
+        },
+        "hydration": 34.7,
+        "energy": 57.5,
+        "core_temp_c": 34.6,
+        "fatigue": 0.0,
+        "injury": 59.9,
+        "infection": 8.4,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 40,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "FOREST",
+        "air_temp_c": 10.8,
+        "water_availability": 0.12,
+        "vegetation_biomass": 0.43
+      },
+      "action": {
+        "action": "REST"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -0.5599999999999999,
+          "energy": -0.42,
+          "fatigue": -4.0,
+          "core_temp": -0.05720703347745006,
+          "injury": -0.2
+        }
+      }
+    },
+    {
+      "t": 40,
+      "time": {
+        "day": 81,
+        "hour": 22
+      },
+      "agent": {
+        "pos": {
+          "x": 51,
+          "y": 38
+        },
+        "hydration": 34.1,
+        "energy": 53.9,
+        "core_temp_c": 34.6,
+        "fatigue": 0.0,
+        "injury": 72.7,
+        "infection": 11.1,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 41,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "FOREST",
+        "air_temp_c": 10.0,
+        "water_availability": 0.13,
+        "vegetation_biomass": 0.43
+      },
+      "action": {
+        "action": "REST"
+      },
+      "events": {
+        "encounter": "True",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -0.5599999999999999,
+          "energy": -0.42,
+          "fatigue": -4.0,
+          "core_temp": -0.05903222579357616,
+          "injury": -0.2
+        }
+      }
+    },
+    {
+      "t": 41,
+      "time": {
+        "day": 81,
+        "hour": 23
+      },
+      "agent": {
+        "pos": {
+          "x": 51,
+          "y": 38
+        },
+        "hydration": 33.6,
+        "energy": 53.5,
+        "core_temp_c": 34.5,
+        "fatigue": 0.0,
+        "injury": 72.5,
+        "infection": 11.1,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 42,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "FOREST",
+        "air_temp_c": 9.1,
+        "water_availability": 0.13,
+        "vegetation_biomass": 0.43
+      },
+      "action": {
+        "action": "REST"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -0.5599999999999999,
+          "energy": -0.42,
+          "fatigue": -4.0,
+          "core_temp": -0.06100359848002614,
+          "injury": -0.2
+        }
+      }
+    },
+    {
+      "t": 42,
+      "time": {
+        "day": 82,
+        "hour": 0
+      },
+      "agent": {
+        "pos": {
+          "x": 51,
+          "y": 38
+        },
+        "hydration": 33.0,
+        "energy": 53.1,
+        "core_temp_c": 34.4,
+        "fatigue": 0.0,
+        "injury": 72.3,
+        "infection": 11.1,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 43,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "FOREST",
+        "air_temp_c": 8.5,
+        "water_availability": 0.13,
+        "vegetation_biomass": 0.43
+      },
+      "action": {
+        "action": "REST"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -0.5599999999999999,
+          "energy": -0.42,
+          "fatigue": -4.0,
+          "core_temp": -0.06230440426968099,
+          "injury": -0.2
+        }
+      }
+    },
+    {
+      "t": 43,
+      "time": {
+        "day": 82,
+        "hour": 1
+      },
+      "agent": {
+        "pos": {
+          "x": 51,
+          "y": 38
+        },
+        "hydration": 32.5,
+        "energy": 52.7,
+        "core_temp_c": 34.4,
+        "fatigue": 0.0,
+        "injury": 72.1,
+        "infection": 11.1,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 44,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "FOREST",
+        "air_temp_c": 9.1,
+        "water_availability": 0.13,
+        "vegetation_biomass": 0.44
+      },
+      "action": {
+        "action": "REST"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -0.5599999999999999,
+          "energy": -0.42,
+          "fatigue": -4.0,
+          "core_temp": -0.060772730246007545,
+          "injury": -0.2
+        }
+      }
+    },
+    {
+      "t": 44,
+      "time": {
+        "day": 82,
+        "hour": 2
+      },
+      "agent": {
+        "pos": {
+          "x": 51,
+          "y": 38
+        },
+        "hydration": 31.9,
+        "energy": 43.2,
+        "core_temp_c": 34.3,
+        "fatigue": 0.0,
+        "injury": 92.1,
+        "infection": 13.6,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 45,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "FOREST",
+        "air_temp_c": 7.1,
+        "water_availability": 0.13,
+        "vegetation_biomass": 0.44
+      },
+      "action": {
+        "action": "REST"
+      },
+      "events": {
+        "encounter": "True",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -0.5599999999999999,
+          "energy": -0.42,
+          "fatigue": -4.0,
+          "core_temp": -0.0655313990795448,
+          "injury": -0.2
+        }
+      }
+    },
+    {
+      "t": 45,
+      "time": {
+        "day": 82,
+        "hour": 3
+      },
+      "agent": {
+        "pos": {
+          "x": 51,
+          "y": 38
+        },
+        "hydration": 31.3,
+        "energy": 42.7,
+        "core_temp_c": 34.3,
+        "fatigue": 0.0,
+        "injury": 91.9,
+        "infection": 13.6,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 46,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "FOREST",
+        "air_temp_c": 10.8,
+        "water_availability": 0.13,
+        "vegetation_biomass": 0.44
+      },
+      "action": {
+        "action": "REST"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -0.5599999999999999,
+          "energy": -0.42,
+          "fatigue": -4.0,
+          "core_temp": -0.056509645625726745,
+          "injury": -0.2
+        }
+      }
+    },
+    {
+      "t": 46,
+      "time": {
+        "day": 82,
+        "hour": 4
+      },
+      "agent": {
+        "pos": {
+          "x": 51,
+          "y": 38
+        },
+        "hydration": 30.8,
+        "energy": 42.3,
+        "core_temp_c": 34.2,
+        "fatigue": 0.0,
+        "injury": 91.7,
+        "infection": 13.6,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 47,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "FOREST",
+        "air_temp_c": 11.0,
+        "water_availability": 0.13,
+        "vegetation_biomass": 0.44
+      },
+      "action": {
+        "action": "REST"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": true,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -0.5599999999999999,
+          "energy": -0.42,
+          "fatigue": -4.0,
+          "core_temp": -0.05576861856328369,
+          "injury": -0.2
+        }
+      }
+    },
+    {
+      "t": 47,
+      "time": {
+        "day": 82,
+        "hour": 5
+      },
+      "agent": {
+        "pos": {
+          "x": 51,
+          "y": 38
+        },
+        "hydration": 30.2,
+        "energy": 41.9,
+        "core_temp_c": 34.1,
+        "fatigue": 0.0,
+        "injury": 91.5,
+        "infection": 13.6,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 48,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "FOREST",
+        "air_temp_c": 12.7,
+        "water_availability": 0.13,
+        "vegetation_biomass": 0.44
+      },
+      "action": {
+        "action": "REST"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -0.5599999999999999,
+          "energy": -0.42,
+          "fatigue": -4.0,
+          "core_temp": -0.05166377173714159,
+          "injury": -0.2
+        }
+      }
+    },
+    {
+      "t": 48,
+      "time": {
+        "day": 82,
+        "hour": 6
+      },
+      "agent": {
+        "pos": {
+          "x": 51,
+          "y": 38
+        },
+        "hydration": 29.7,
+        "energy": 41.5,
+        "core_temp_c": 34.1,
+        "fatigue": 0.0,
+        "injury": 91.3,
+        "infection": 13.6,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 49,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "FOREST",
+        "air_temp_c": 11.3,
+        "water_availability": 0.13,
+        "vegetation_biomass": 0.44
+      },
+      "action": {
+        "action": "REST"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -0.5599999999999999,
+          "energy": -0.42,
+          "fatigue": -4.0,
+          "core_temp": -0.05483791056460462,
+          "injury": -0.2
+        }
+      }
+    },
+    {
+      "t": 49,
+      "time": {
+        "day": 82,
+        "hour": 7
+      },
+      "agent": {
+        "pos": {
+          "x": 51,
+          "y": 38
+        },
+        "hydration": 29.1,
+        "energy": 37.9,
+        "core_temp_c": 34.0,
+        "fatigue": 0.0,
+        "injury": 100.0,
+        "infection": 14.2,
+        "alive": false,
+        "cause_of_death": "TRAUMA",
+        "age_steps": 50,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "FOREST",
+        "air_temp_c": 13.9,
+        "water_availability": 0.13,
+        "vegetation_biomass": 0.44
+      },
+      "action": {
+        "action": "REST"
+      },
+      "events": {
+        "encounter": "True",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -0.5599999999999999,
+          "energy": -0.42,
+          "fatigue": -4.0,
+          "core_temp": -0.04854386659529829,
+          "injury": -0.2
+        }
+      }
+    }
+  ],
+  "summary": {
+    "survived_steps": 50,
+    "survived_hours": 50.0,
+    "survived_days": 2.1,
+    "cause_of_death": "TRAUMA",
+    "final_pos": {
+      "x": 51,
+      "y": 38
+    }
+  }
+}

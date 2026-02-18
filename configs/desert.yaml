@@ -1,0 +1,42 @@
+map:
+  width: 80
+  height: 60
+  terrain_weights:
+    PLAINS: 0.10
+    FOREST: 0.05
+    DESERT: 0.55
+    TUNDRA: 0.00
+    MOUNTAIN: 0.15
+    WATER: 0.08
+    SWAMP: 0.02
+  num_lakes: 2
+  num_rivers: 1
+
+sim:
+  dt_hours: 1.0
+  max_steps: 500
+  observation_radius: 3
+  start_hour: 6
+  start_day: 170  # mid-summer
+
+climate:
+  terrain_base_temp:
+    DESERT: 35.0
+    PLAINS: 25.0
+    FOREST: 22.0
+    MOUNTAIN: 15.0
+    WATER: 20.0
+    SWAMP: 25.0
+    TUNDRA: -5.0
+
+physiology:
+  initial_hydration: 70.0
+  initial_energy: 75.0
+  hydration_base_drain: 1.0  # faster drain in desert
+
+agent:
+  type: heuristic
+
+render:
+  cell_size: 10
+  fps: 30
