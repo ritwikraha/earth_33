@@ -29,6 +29,32 @@ climate:
     DESERT: 25.0
     TUNDRA: -5.0
 
+hunters:
+  enabled: true
+  count: 4
+  min_detection_radius: 3
+  max_detection_radius: 7
+  chase_speed: 2
+  patrol_speed: 1
+  spawn_margin: 15
+
+trophy:
+  enabled: true
+  min_distance_from_spawn: 25
+  hint_interval: 10
+  warm_cold_enabled: true
+
+fog_of_war:
+  enabled: true
+  visibility_radius: 6
+  explored_dim_factor: 0.35
+
+difficulty:
+  drain_multiplier: 1.0
+  hazard_multiplier: 1.0
+  wildlife_multiplier: 1.0
+  temperature_extremity: 1.0
+
 physiology:
   initial_hydration: 85.0
   initial_energy: 80.0
@@ -39,3 +65,4 @@ agent:
 render:
   cell_size: 10
   fps: 30
+  trail_length: 50

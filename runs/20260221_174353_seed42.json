@@ -1,0 +1,5173 @@
+{
+  "meta": {
+    "version": "0.1",
+    "seed": 42
+  },
+  "config": {
+    "map": {
+      "width": 80,
+      "height": 60,
+      "terrain_weights": {
+        "PLAINS": 0.25,
+        "FOREST": 0.3,
+        "DESERT": 0.1,
+        "TUNDRA": 0.05,
+        "MOUNTAIN": 0.1,
+        "WATER": 0.1,
+        "SWAMP": 0.1
+      },
+      "num_lakes": 3,
+      "num_rivers": 2,
+      "elevation_octaves": 4,
+      "elevation_scale": 0.05
+    },
+    "sim": {
+      "dt_hours": 1.0,
+      "max_steps": 50,
+      "observation_radius": 5,
+      "start_hour": 6,
+      "start_day": 80
+    },
+    "climate": {
+      "lapse_rate": 6.5,
+      "diurnal_amp": {
+        "DESERT": 10.0,
+        "PLAINS": 6.0,
+        "FOREST": 4.0,
+        "TUNDRA": 5.0,
+        "MOUNTAIN": 7.0,
+        "WATER": 3.0,
+        "SWAMP": 4.0
+      },
+      "seasonal_amp": {
+        "DESERT": 8.0,
+        "PLAINS": 10.0,
+        "FOREST": 10.0,
+        "TUNDRA": 15.0,
+        "MOUNTAIN": 12.0,
+        "WATER": 6.0,
+        "SWAMP": 8.0
+      },
+      "terrain_base_temp": {
+        "DESERT": 30.0,
+        "PLAINS": 18.0,
+        "FOREST": 15.0,
+        "TUNDRA": -5.0,
+        "MOUNTAIN": 8.0,
+        "WATER": 16.0,
+        "SWAMP": 20.0
+      },
+      "temp_noise_sigma": 1.0
+    },
+    "physiology": {
+      "initial_hydration": 75.0,
+      "initial_energy": 70.0,
+      "initial_core_temp": 37.0,
+      "initial_fatigue": 10.0,
+      "initial_injury": 0.0,
+      "initial_infection": 0.0,
+      "hydration_base_drain": 0.9,
+      "energy_base_drain": 0.7,
+      "fatigue_base_gain": 0.7,
+      "rest_fatigue_recovery": 4.0,
+      "injury_recovery_rate": 0.2,
+      "thermal_drift_k": 0.008,
+      "death_hydration": 0.0,
+      "death_energy": 0.0,
+      "death_core_temp_low": 30.0,
+      "death_core_temp_high": 42.0,
+      "death_injury": 100.0,
+      "death_infection": 100.0
+    },
+    "agent": {
+      "type": "heuristic",
+      "llm_provider": "gemini",
+      "llm_model": "gemini-2.0-flash",
+      "llm_max_retries": 2,
+      "llm_temperature": 0.7
+    },
+    "render": {
+      "cell_size": 10,
+      "fps": 30,
+      "trail_length": 50,
+      "hud_width": 280
+    },
+    "hunters": {
+      "enabled": true,
+      "count": 6,
+      "min_detection_radius": 3,
+      "max_detection_radius": 8,
+      "chase_speed": 2,
+      "patrol_speed": 1,
+      "spawn_margin": 20
+    },
+    "trophy": {
+      "enabled": true,
+      "min_distance_from_spawn": 30,
+      "hint_interval": 8,
+      "warm_cold_enabled": true
+    },
+    "difficulty": {
+      "drain_multiplier": 1.3,
+      "hazard_multiplier": 1.2,
+      "wildlife_multiplier": 1.4,
+      "temperature_extremity": 1.2
+    },
+    "fog_of_war": {
+      "enabled": true,
+      "visibility_radius": 6,
+      "explored_dim_factor": 0.35
+    },
+    "swarm": {
+      "population_size": 10,
+      "search_radius": 30,
+      "inner_iterations": 3
+    }
+  },
+  "steps": [
+    {
+      "t": 0,
+      "time": {
+        "day": 80,
+        "hour": 6
+      },
+      "agent": {
+        "pos": {
+          "x": 40,
+          "y": 45
+        },
+        "hydration": 72.7,
+        "energy": 68.2,
+        "core_temp_c": 36.8,
+        "fatigue": 11.8,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 1,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "FOREST",
+        "air_temp_c": 14.9,
+        "water_availability": 0.14,
+        "vegetation_biomass": 0.37
+      },
+      "action": {
+        "action": "MOVE_N"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -2.2815000000000003,
+          "energy": -1.7745,
+          "fatigue": 1.7745,
+          "core_temp": -0.1765290443772095
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 77,
+              "y": 44
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 2,
+              "y": 35
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 6,
+              "y": 53
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 46,
+              "y": 27
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 57,
+              "y": 20
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 65,
+              "y": 23
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 1,
+      "time": {
+        "day": 80,
+        "hour": 7
+      },
+      "agent": {
+        "pos": {
+          "x": 40,
+          "y": 44
+        },
+        "hydration": 70.4,
+        "energy": 66.5,
+        "core_temp_c": 36.8,
+        "fatigue": 13.5,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 2,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "FOREST",
+        "air_temp_c": 20.0,
+        "water_availability": 0.13,
+        "vegetation_biomass": 0.31
+      },
+      "action": {
+        "action": "MOVE_N"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -2.2815000000000003,
+          "energy": -1.7745,
+          "fatigue": 1.7745,
+          "core_temp": -0.040413094115131075
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 77,
+              "y": 43
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 2,
+              "y": 34
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 5,
+              "y": 53
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 46,
+              "y": 28
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 57,
+              "y": 20
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 65,
+              "y": 22
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 2,
+      "time": {
+        "day": 80,
+        "hour": 8
+      },
+      "agent": {
+        "pos": {
+          "x": 40,
+          "y": 43
+        },
+        "hydration": 68.2,
+        "energy": 64.7,
+        "core_temp_c": 36.7,
+        "fatigue": 15.3,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 3,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "FOREST",
+        "air_temp_c": 16.8,
+        "water_availability": 0.19,
+        "vegetation_biomass": 0.57
+      },
+      "action": {
+        "action": "MOVE_N"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -2.2815000000000003,
+          "energy": -1.7745,
+          "fatigue": 1.7745,
+          "core_temp": -0.0480009163686768
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 77,
+              "y": 42
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 2,
+              "y": 33
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 4,
+              "y": 53
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 46,
+              "y": 28
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 57,
+              "y": 19
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 65,
+              "y": 21
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 3,
+      "time": {
+        "day": 80,
+        "hour": 9
+      },
+      "agent": {
+        "pos": {
+          "x": 40,
+          "y": 42
+        },
+        "hydration": 65.9,
+        "energy": 62.9,
+        "core_temp_c": 36.7,
+        "fatigue": 17.1,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 4,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "FOREST",
+        "air_temp_c": 20.9,
+        "water_availability": 0.19,
+        "vegetation_biomass": 0.55
+      },
+      "action": {
+        "action": "MOVE_N"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -2.2815000000000003,
+          "energy": -1.7745,
+          "fatigue": 1.7745,
+          "core_temp": -0.03807555430216226
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 77,
+              "y": 41
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 2,
+              "y": 32
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 3,
+              "y": 53
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 46,
+              "y": 27
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 57,
+              "y": 19
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 65,
+              "y": 21
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 4,
+      "time": {
+        "day": 80,
+        "hour": 10
+      },
+      "agent": {
+        "pos": {
+          "x": 40,
+          "y": 41
+        },
+        "hydration": 63.6,
+        "energy": 61.1,
+        "core_temp_c": 36.6,
+        "fatigue": 18.9,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 5,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "FOREST",
+        "air_temp_c": 19.0,
+        "water_availability": 0.26,
+        "vegetation_biomass": 0.54
+      },
+      "action": {
+        "action": "MOVE_N"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -2.2815000000000003,
+          "energy": -1.7745,
+          "fatigue": 1.7745,
+          "core_temp": -0.1414435230949101
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 77,
+              "y": 40
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 2,
+              "y": 31
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 2,
+              "y": 53
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 46,
+              "y": 26
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 57,
+              "y": 20
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 65,
+              "y": 22
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 5,
+      "time": {
+        "day": 80,
+        "hour": 11
+      },
+      "agent": {
+        "pos": {
+          "x": 40,
+          "y": 40
+        },
+        "hydration": 56.3,
+        "energy": 59.4,
+        "core_temp_c": 36.6,
+        "fatigue": 20.6,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 6,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "DESERT",
+        "air_temp_c": 38.6,
+        "water_availability": 0.14,
+        "vegetation_biomass": 0.0
+      },
+      "action": {
+        "action": "MOVE_N"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [
+          "Heat stress: extra hydration drain 4.2"
+        ],
+        "delta": {
+          "hydration": -3.1749712510886594,
+          "energy": -1.7745,
+          "fatigue": 1.7745,
+          "core_temp": 0.016284254834115417
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 77,
+              "y": 39
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 2,
+              "y": 30
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 1,
+              "y": 53
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 46,
+              "y": 25
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 57,
+              "y": 20
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 65,
+              "y": 23
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 6,
+      "time": {
+        "day": 80,
+        "hour": 12
+      },
+      "agent": {
+        "pos": {
+          "x": 40,
+          "y": 39
+        },
+        "hydration": 46.2,
+        "energy": 57.4,
+        "core_temp_c": 36.6,
+        "fatigue": 22.6,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 7,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "DESERT",
+        "air_temp_c": 42.2,
+        "water_availability": 0.19,
+        "vegetation_biomass": 0.54
+      },
+      "action": {
+        "action": "MOVE_N"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [
+          "Heat stress: extra hydration drain 6.3"
+        ],
+        "delta": {
+          "hydration": -3.730850809724907,
+          "energy": -1.9109999999999998,
+          "fatigue": 1.9109999999999998,
+          "core_temp": 0.045413946844384614
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 77,
+              "y": 38
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 2,
+              "y": 29
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 0,
+              "y": 53
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 46,
+              "y": 24
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 57,
+              "y": 19
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 65,
+              "y": 24
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 7,
+      "time": {
+        "day": 80,
+        "hour": 13
+      },
+      "agent": {
+        "pos": {
+          "x": 41,
+          "y": 39
+        },
+        "hydration": 37.5,
+        "energy": 55.5,
+        "core_temp_c": 36.6,
+        "fatigue": 24.5,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 8,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "DESERT",
+        "air_temp_c": 40.3,
+        "water_availability": 0.21,
+        "vegetation_biomass": 0.01
+      },
+      "action": {
+        "action": "MOVE_E"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [
+          "Heat stress: extra hydration drain 5.2"
+        ],
+        "delta": {
+          "hydration": -3.5296183953526756,
+          "energy": -1.9109999999999998,
+          "fatigue": 1.9109999999999998,
+          "core_temp": 0.02957121877945792
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 77,
+              "y": 37
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 2,
+              "y": 28
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 0,
+              "y": 53
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 46,
+              "y": 23
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 57,
+              "y": 19
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 65,
+              "y": 25
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 8,
+      "time": {
+        "day": 80,
+        "hour": 14
+      },
+      "agent": {
+        "pos": {
+          "x": 41,
+          "y": 38
+        },
+        "hydration": 30.8,
+        "energy": 53.6,
+        "core_temp_c": 36.7,
+        "fatigue": 26.4,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 9,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "DESERT",
+        "air_temp_c": 37.4,
+        "water_availability": 0.34,
+        "vegetation_biomass": 0.23
+      },
+      "action": {
+        "action": "MOVE_N"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [
+          "Heat stress: extra hydration drain 3.5"
+        ],
+        "delta": {
+          "hydration": -3.230315503403803,
+          "energy": -1.9109999999999998,
+          "fatigue": 1.9109999999999998,
+          "core_temp": 0.006311349648539704
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 77,
+              "y": 36
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 2,
+              "y": 27
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 1,
+              "y": 53
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 46,
+              "y": 22
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 57,
+              "y": 20
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 66,
+              "y": 25
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 9,
+      "time": {
+        "day": 80,
+        "hour": 15
+      },
+      "agent": {
+        "pos": {
+          "x": 41,
+          "y": 37
+        },
+        "hydration": 28.3,
+        "energy": 51.7,
+        "core_temp_c": 36.5,
+        "fatigue": 28.3,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 10,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "WATER",
+        "air_temp_c": 14.9,
+        "water_availability": 1.0,
+        "vegetation_biomass": 0.01
+      },
+      "action": {
+        "action": "MOVE_N"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": true,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -2.457,
+          "energy": -1.9109999999999998,
+          "fatigue": 1.9109999999999998,
+          "core_temp": -0.1743390034141343
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 77,
+              "y": 35
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 2,
+              "y": 28
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 2,
+              "y": 53
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 46,
+              "y": 21
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 57,
+              "y": 20
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 67,
+              "y": 25
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 10,
+      "time": {
+        "day": 80,
+        "hour": 16
+      },
+      "agent": {
+        "pos": {
+          "x": 41,
+          "y": 36
+        },
+        "hydration": 23.1,
+        "energy": 47.6,
+        "core_temp_c": 36.3,
+        "fatigue": 32.4,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 11,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "WATER",
+        "air_temp_c": 13.9,
+        "water_availability": 1.0,
+        "vegetation_biomass": 0.01
+      },
+      "action": {
+        "action": "MOVE_N"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -5.265,
+          "energy": -4.095,
+          "fatigue": 4.095,
+          "core_temp": -0.18057798915311463
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 77,
+              "y": 34
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 2,
+              "y": 29
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 3,
+              "y": 53
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 46,
+              "y": 20
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 57,
+              "y": 19
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 68,
+              "y": 25
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 11,
+      "time": {
+        "day": 80,
+        "hour": 17
+      },
+      "agent": {
+        "pos": {
+          "x": 41,
+          "y": 35
+        },
+        "hydration": 17.8,
+        "energy": 43.5,
+        "core_temp_c": 36.0,
+        "fatigue": 36.5,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 12,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "TUNDRA",
+        "air_temp_c": 3.1,
+        "water_availability": 0.52,
+        "vegetation_biomass": 0.13
+      },
+      "action": {
+        "action": "MOVE_N"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -5.265,
+          "energy": -4.095,
+          "fatigue": 4.095,
+          "core_temp": -0.26561491923406805
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 77,
+              "y": 33
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 2,
+              "y": 30
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 4,
+              "y": 53
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 46,
+              "y": 19
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 57,
+              "y": 19
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 69,
+              "y": 25
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 12,
+      "time": {
+        "day": 80,
+        "hour": 18
+      },
+      "agent": {
+        "pos": {
+          "x": 41,
+          "y": 35
+        },
+        "hydration": 29.8,
+        "energy": 42.7,
+        "core_temp_c": 35.7,
+        "fatigue": 37.3,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 13,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "TUNDRA",
+        "air_temp_c": 0.5,
+        "water_availability": 0.52,
+        "vegetation_biomass": 0.13
+      },
+      "action": {
+        "action": "DRINK"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration_gain": 13.083331061537532,
+          "hydration": -1.0530000000000002,
+          "energy": -0.8190000000000001,
+          "fatigue": 0.8190000000000001,
+          "core_temp": -0.28407770029199675
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 77,
+              "y": 32
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 2,
+              "y": 31
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 5,
+              "y": 53
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 46,
+              "y": 18
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 57,
+              "y": 20
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 70,
+              "y": 25
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 13,
+      "time": {
+        "day": 80,
+        "hour": 19
+      },
+      "agent": {
+        "pos": {
+          "x": 41,
+          "y": 34
+        },
+        "hydration": 27.7,
+        "energy": 41.1,
+        "core_temp_c": 35.5,
+        "fatigue": 38.9,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 14,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "TUNDRA",
+        "air_temp_c": -0.7,
+        "water_availability": 0.42,
+        "vegetation_biomass": 0.36
+      },
+      "action": {
+        "action": "MOVE_N"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": true,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -2.106,
+          "energy": -1.6379999999999997,
+          "fatigue": 1.6379999999999997,
+          "core_temp": -0.2914134517127593
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 77,
+              "y": 31
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 2,
+              "y": 32
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 6,
+              "y": 53
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 46,
+              "y": 17
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 57,
+              "y": 20
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 71,
+              "y": 25
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 14,
+      "time": {
+        "day": 80,
+        "hour": 20
+      },
+      "agent": {
+        "pos": {
+          "x": 41,
+          "y": 33
+        },
+        "hydration": 25.6,
+        "energy": 39.4,
+        "core_temp_c": 35.2,
+        "fatigue": 40.6,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 15,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "TUNDRA",
+        "air_temp_c": -2.0,
+        "water_availability": 0.33,
+        "vegetation_biomass": 0.35
+      },
+      "action": {
+        "action": "MOVE_N"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -2.106,
+          "energy": -1.6379999999999997,
+          "fatigue": 1.6379999999999997,
+          "core_temp": -0.29956136495437025
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 77,
+              "y": 30
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 2,
+              "y": 33
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 7,
+              "y": 53
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 46,
+              "y": 16
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 57,
+              "y": 19
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 72,
+              "y": 25
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 15,
+      "time": {
+        "day": 80,
+        "hour": 21
+      },
+      "agent": {
+        "pos": {
+          "x": 41,
+          "y": 32
+        },
+        "hydration": 23.5,
+        "energy": 37.8,
+        "core_temp_c": 34.9,
+        "fatigue": 42.2,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 16,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "TUNDRA",
+        "air_temp_c": -2.1,
+        "water_availability": 0.27,
+        "vegetation_biomass": 0.0
+      },
+      "action": {
+        "action": "MOVE_N"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -2.106,
+          "energy": -1.6379999999999997,
+          "fatigue": 1.6379999999999997,
+          "core_temp": -0.29841290175857044
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 77,
+              "y": 29
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 2,
+              "y": 34
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 8,
+              "y": 53
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 46,
+              "y": 15
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 57,
+              "y": 19
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 73,
+              "y": 25
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 16,
+      "time": {
+        "day": 80,
+        "hour": 22
+      },
+      "agent": {
+        "pos": {
+          "x": 41,
+          "y": 31
+        },
+        "hydration": 21.4,
+        "energy": 36.1,
+        "core_temp_c": 34.7,
+        "fatigue": 43.9,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 17,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "DESERT",
+        "air_temp_c": 18.1,
+        "water_availability": 0.17,
+        "vegetation_biomass": 0.3
+      },
+      "action": {
+        "action": "MOVE_N"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -2.106,
+          "energy": -1.6379999999999997,
+          "fatigue": 1.6379999999999997,
+          "core_temp": -0.13390181323275305
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 77,
+              "y": 28
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 2,
+              "y": 35
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 9,
+              "y": 53
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 46,
+              "y": 14
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 57,
+              "y": 20
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 74,
+              "y": 25
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 17,
+      "time": {
+        "day": 80,
+        "hour": 23
+      },
+      "agent": {
+        "pos": {
+          "x": 42,
+          "y": 31
+        },
+        "hydration": 18.9,
+        "energy": 34.2,
+        "core_temp_c": 34.4,
+        "fatigue": 45.8,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 18,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "TUNDRA",
+        "air_temp_c": -3.9,
+        "water_availability": 0.22,
+        "vegetation_biomass": 0.36
+      },
+      "action": {
+        "action": "MOVE_E"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -2.457,
+          "energy": -1.9109999999999998,
+          "fatigue": 1.9109999999999998,
+          "core_temp": -0.3090426936575172
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 77,
+              "y": 27
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 2,
+              "y": 36
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 10,
+              "y": 53
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 46,
+              "y": 13
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 57,
+              "y": 19
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 75,
+              "y": 25
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 18,
+      "time": {
+        "day": 81,
+        "hour": 0
+      },
+      "agent": {
+        "pos": {
+          "x": 42,
+          "y": 31
+        },
+        "hydration": 23.3,
+        "energy": 33.4,
+        "core_temp_c": 34.1,
+        "fatigue": 46.6,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 19,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "TUNDRA",
+        "air_temp_c": -4.3,
+        "water_availability": 0.22,
+        "vegetation_biomass": 0.36
+      },
+      "action": {
+        "action": "DRINK"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration_gain": 5.383115811414134,
+          "hydration": -1.0530000000000002,
+          "energy": -0.8190000000000001,
+          "fatigue": 0.8190000000000001,
+          "core_temp": -0.309354843345525
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 77,
+              "y": 26
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 2,
+              "y": 37
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 11,
+              "y": 53
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 46,
+              "y": 12
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 57,
+              "y": 19
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 76,
+              "y": 25
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 19,
+      "time": {
+        "day": 81,
+        "hour": 1
+      },
+      "agent": {
+        "pos": {
+          "x": 42,
+          "y": 30
+        },
+        "hydration": 21.2,
+        "energy": 31.8,
+        "core_temp_c": 34.0,
+        "fatigue": 48.2,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 20,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "DESERT",
+        "air_temp_c": 17.8,
+        "water_availability": 0.14,
+        "vegetation_biomass": 0.26
+      },
+      "action": {
+        "action": "MOVE_N"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -2.106,
+          "energy": -1.6379999999999997,
+          "fatigue": 1.6379999999999997,
+          "core_temp": -0.13076997225795634
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 77,
+              "y": 25
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 2,
+              "y": 38
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 12,
+              "y": 53
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 46,
+              "y": 13
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 57,
+              "y": 20
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 77,
+              "y": 25
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 20,
+      "time": {
+        "day": 81,
+        "hour": 2
+      },
+      "agent": {
+        "pos": {
+          "x": 42,
+          "y": 29
+        },
+        "hydration": 18.7,
+        "energy": 29.9,
+        "core_temp_c": 33.9,
+        "fatigue": 50.1,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 21,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "DESERT",
+        "air_temp_c": 19.0,
+        "water_availability": 0.1,
+        "vegetation_biomass": 0.0
+      },
+      "action": {
+        "action": "MOVE_N"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -2.457,
+          "energy": -1.9109999999999998,
+          "fatigue": 1.9109999999999998,
+          "core_temp": -0.11974993472607694
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 77,
+              "y": 24
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 3,
+              "y": 38
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 13,
+              "y": 53
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 46,
+              "y": 14
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 57,
+              "y": 20
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 78,
+              "y": 25
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 21,
+      "time": {
+        "day": 81,
+        "hour": 3
+      },
+      "agent": {
+        "pos": {
+          "x": 42,
+          "y": 29
+        },
+        "hydration": 17.1,
+        "energy": 28.6,
+        "core_temp_c": 33.8,
+        "fatigue": 51.4,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 22,
+        "has_shelter": true
+      },
+      "local": {
+        "terrain": "DESERT",
+        "air_temp_c": 22.2,
+        "water_availability": 0.07,
+        "vegetation_biomass": 0.0
+      },
+      "action": {
+        "action": "BUILD_SHELTER"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -1.6380000000000001,
+          "energy": -1.2739999999999998,
+          "fatigue": 1.2739999999999998,
+          "core_temp": -0.02792784112240063
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 77,
+              "y": 23
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 4,
+              "y": 38
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 14,
+              "y": 53
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 46,
+              "y": 15
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 57,
+              "y": 19
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 79,
+              "y": 25
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 22,
+      "time": {
+        "day": 81,
+        "hour": 4
+      },
+      "agent": {
+        "pos": {
+          "x": 42,
+          "y": 30
+        },
+        "hydration": 14.6,
+        "energy": 26.7,
+        "core_temp_c": 33.8,
+        "fatigue": 53.3,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 23,
+        "has_shelter": true
+      },
+      "local": {
+        "terrain": "DESERT",
+        "air_temp_c": 23.4,
+        "water_availability": 0.09,
+        "vegetation_biomass": 0.26
+      },
+      "action": {
+        "action": "MOVE_S"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -2.457,
+          "energy": -1.9109999999999998,
+          "fatigue": 1.9109999999999998,
+          "core_temp": -0.024963549800366643
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 77,
+              "y": 22
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 5,
+              "y": 38
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 15,
+              "y": 53
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 46,
+              "y": 16
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 57,
+              "y": 19
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 79,
+              "y": 25
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 23,
+      "time": {
+        "day": 81,
+        "hour": 5
+      },
+      "agent": {
+        "pos": {
+          "x": 42,
+          "y": 31
+        },
+        "hydration": 12.2,
+        "energy": 24.8,
+        "core_temp_c": 33.7,
+        "fatigue": 55.2,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 24,
+        "has_shelter": true
+      },
+      "local": {
+        "terrain": "TUNDRA",
+        "air_temp_c": 0.2,
+        "water_availability": 0.22,
+        "vegetation_biomass": 0.37
+      },
+      "action": {
+        "action": "MOVE_S"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -2.457,
+          "energy": -1.9109999999999998,
+          "fatigue": 1.9109999999999998,
+          "core_temp": -0.0805712635549356
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 77,
+              "y": 21
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 6,
+              "y": 38
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 16,
+              "y": 53
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 46,
+              "y": 17
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 57,
+              "y": 20
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 78,
+              "y": 25
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 24,
+      "time": {
+        "day": 81,
+        "hour": 6
+      },
+      "agent": {
+        "pos": {
+          "x": 42,
+          "y": 31
+        },
+        "hydration": 16.5,
+        "energy": 24.0,
+        "core_temp_c": 33.6,
+        "fatigue": 56.0,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 25,
+        "has_shelter": true
+      },
+      "local": {
+        "terrain": "TUNDRA",
+        "air_temp_c": 1.3,
+        "water_availability": 0.22,
+        "vegetation_biomass": 0.37
+      },
+      "action": {
+        "action": "DRINK"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration_gain": 5.385549757359622,
+          "hydration": -1.0530000000000002,
+          "energy": -0.8190000000000001,
+          "fatigue": 0.8190000000000001,
+          "core_temp": -0.07770507365366092
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 77,
+              "y": 20
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 7,
+              "y": 38
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 17,
+              "y": 53
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 46,
+              "y": 18
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 57,
+              "y": 19
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 77,
+              "y": 25
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 25,
+      "time": {
+        "day": 81,
+        "hour": 7
+      },
+      "agent": {
+        "pos": {
+          "x": 42,
+          "y": 31
+        },
+        "hydration": 20.8,
+        "energy": 23.1,
+        "core_temp_c": 33.6,
+        "fatigue": 56.9,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 26,
+        "has_shelter": true
+      },
+      "local": {
+        "terrain": "TUNDRA",
+        "air_temp_c": 4.0,
+        "water_availability": 0.22,
+        "vegetation_biomass": 0.37
+      },
+      "action": {
+        "action": "DRINK"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration_gain": 5.3859547006137145,
+          "hydration": -1.0530000000000002,
+          "energy": -0.8190000000000001,
+          "fatigue": 0.8190000000000001,
+          "core_temp": -0.07121327447783529
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 77,
+              "y": 19
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 8,
+              "y": 38
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 18,
+              "y": 53
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 46,
+              "y": 17
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 57,
+              "y": 19
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 76,
+              "y": 25
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 26,
+      "time": {
+        "day": 81,
+        "hour": 8
+      },
+      "agent": {
+        "pos": {
+          "x": 42,
+          "y": 30
+        },
+        "hydration": 18.2,
+        "energy": 21.5,
+        "core_temp_c": 33.6,
+        "fatigue": 58.5,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 27,
+        "has_shelter": true
+      },
+      "local": {
+        "terrain": "DESERT",
+        "air_temp_c": 35.0,
+        "water_availability": 0.01,
+        "vegetation_biomass": 0.25
+      },
+      "action": {
+        "action": "MOVE_N"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -2.6294180272500522,
+          "energy": -1.6379999999999997,
+          "fatigue": 1.6379999999999997,
+          "core_temp": 0.003501467037923373
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 77,
+              "y": 18
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 9,
+              "y": 38
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 18,
+              "y": 54
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 46,
+              "y": 16
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 57,
+              "y": 20
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 75,
+              "y": 25
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 27,
+      "time": {
+        "day": 81,
+        "hour": 9
+      },
+      "agent": {
+        "pos": {
+          "x": 42,
+          "y": 30
+        },
+        "hydration": 15.9,
+        "energy": 25.2,
+        "core_temp_c": 33.6,
+        "fatigue": 59.7,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 28,
+        "has_shelter": true
+      },
+      "local": {
+        "terrain": "DESERT",
+        "air_temp_c": 37.7,
+        "water_availability": 0.0,
+        "vegetation_biomass": 0.15
+      },
+      "action": {
+        "action": "FORAGE"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "energy_gain": 4.91621662794001,
+          "hydration": -2.3253114519132456,
+          "energy": -1.1829999999999998,
+          "fatigue": 1.1829999999999998,
+          "core_temp": 0.009975219470798356
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 77,
+              "y": 17
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 10,
+              "y": 38
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 18,
+              "y": 55
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 46,
+              "y": 15
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 57,
+              "y": 20
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 74,
+              "y": 25
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 28,
+      "time": {
+        "day": 81,
+        "hour": 10
+      },
+      "agent": {
+        "pos": {
+          "x": 42,
+          "y": 31
+        },
+        "hydration": 13.4,
+        "energy": 23.3,
+        "core_temp_c": 33.5,
+        "fatigue": 61.6,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 29,
+        "has_shelter": true
+      },
+      "local": {
+        "terrain": "TUNDRA",
+        "air_temp_c": 7.5,
+        "water_availability": 0.22,
+        "vegetation_biomass": 0.37
+      },
+      "action": {
+        "action": "MOVE_S"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -2.457,
+          "energy": -1.9109999999999998,
+          "fatigue": 1.9109999999999998,
+          "core_temp": -0.0626853483207474
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 77,
+              "y": 16
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 11,
+              "y": 38
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 18,
+              "y": 56
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 46,
+              "y": 14
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 57,
+              "y": 19
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 73,
+              "y": 25
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 29,
+      "time": {
+        "day": 81,
+        "hour": 11
+      },
+      "agent": {
+        "pos": {
+          "x": 42,
+          "y": 31
+        },
+        "hydration": 17.7,
+        "energy": 22.5,
+        "core_temp_c": 33.5,
+        "fatigue": 62.4,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 30,
+        "has_shelter": true
+      },
+      "local": {
+        "terrain": "TUNDRA",
+        "air_temp_c": 7.5,
+        "water_availability": 0.22,
+        "vegetation_biomass": 0.37
+      },
+      "action": {
+        "action": "DRINK"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration_gain": 5.387572424836672,
+          "hydration": -1.0530000000000002,
+          "energy": -0.8190000000000001,
+          "fatigue": 0.8190000000000001,
+          "core_temp": -0.06239439269327281
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 77,
+              "y": 15
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 12,
+              "y": 38
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 18,
+              "y": 57
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 46,
+              "y": 13
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 57,
+              "y": 19
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 72,
+              "y": 25
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 30,
+      "time": {
+        "day": 81,
+        "hour": 12
+      },
+      "agent": {
+        "pos": {
+          "x": 42,
+          "y": 31
+        },
+        "hydration": 22.1,
+        "energy": 21.7,
+        "core_temp_c": 33.4,
+        "fatigue": 63.2,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 31,
+        "has_shelter": true
+      },
+      "local": {
+        "terrain": "TUNDRA",
+        "air_temp_c": 7.5,
+        "water_availability": 0.22,
+        "vegetation_biomass": 0.37
+      },
+      "action": {
+        "action": "DRINK"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration_gain": 5.387976342653742,
+          "hydration": -1.0530000000000002,
+          "energy": -0.8190000000000001,
+          "fatigue": 0.8190000000000001,
+          "core_temp": -0.062205533256124594
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 77,
+              "y": 14
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 13,
+              "y": 38
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 18,
+              "y": 58
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 46,
+              "y": 12
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 57,
+              "y": 19
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 71,
+              "y": 25
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 31,
+      "time": {
+        "day": 81,
+        "hour": 13
+      },
+      "agent": {
+        "pos": {
+          "x": 42,
+          "y": 30
+        },
+        "hydration": 18.7,
+        "energy": 20.0,
+        "core_temp_c": 33.4,
+        "fatigue": 64.9,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 32,
+        "has_shelter": true
+      },
+      "local": {
+        "terrain": "DESERT",
+        "air_temp_c": 42.2,
+        "water_availability": 0.0,
+        "vegetation_biomass": 0.13
+      },
+      "action": {
+        "action": "MOVE_N"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -3.373870281132414,
+          "energy": -1.6379999999999997,
+          "fatigue": 1.6379999999999997,
+          "core_temp": 0.021098275045836078
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 77,
+              "y": 13
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 14,
+              "y": 38
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 18,
+              "y": 59
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 46,
+              "y": 11
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 56,
+              "y": 19
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 70,
+              "y": 25
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 32,
+      "time": {
+        "day": 81,
+        "hour": 14
+      },
+      "agent": {
+        "pos": {
+          "x": 42,
+          "y": 30
+        },
+        "hydration": 11.4,
+        "energy": 21.3,
+        "core_temp_c": 33.5,
+        "fatigue": 66.1,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 33,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "DESERT",
+        "air_temp_c": 39.7,
+        "water_availability": 0.0,
+        "vegetation_biomass": 0.02
+      },
+      "action": {
+        "action": "FORAGE"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [
+          "Heat stress: extra hydration drain 4.8"
+        ],
+        "delta": {
+          "energy_gain": 2.4162166279400092,
+          "hydration": -2.526487416997771,
+          "energy": -1.1829999999999998,
+          "fatigue": 1.1829999999999998,
+          "core_temp": 0.049975500044627155
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 77,
+              "y": 12
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 15,
+              "y": 38
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 18,
+              "y": 59
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 46,
+              "y": 10
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 56,
+              "y": 19
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 69,
+              "y": 25
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 33,
+      "time": {
+        "day": 81,
+        "hour": 15
+      },
+      "agent": {
+        "pos": {
+          "x": 42,
+          "y": 30
+        },
+        "hydration": 9.1,
+        "energy": 20.0,
+        "core_temp_c": 33.5,
+        "fatigue": 67.3,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 34,
+        "has_shelter": true
+      },
+      "local": {
+        "terrain": "DESERT",
+        "air_temp_c": 36.0,
+        "water_availability": 0.0,
+        "vegetation_biomass": 0.02
+      },
+      "action": {
+        "action": "BUILD_SHELTER"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -2.2583395865859477,
+          "energy": -1.2739999999999998,
+          "fatigue": 1.2739999999999998,
+          "core_temp": 0.005984681957623587
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 77,
+              "y": 11
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 16,
+              "y": 38
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 18,
+              "y": 58
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 46,
+              "y": 11
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 57,
+              "y": 19
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 68,
+              "y": 25
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 34,
+      "time": {
+        "day": 81,
+        "hour": 16
+      },
+      "agent": {
+        "pos": {
+          "x": 42,
+          "y": 31
+        },
+        "hydration": 6.7,
+        "energy": 18.1,
+        "core_temp_c": 33.4,
+        "fatigue": 69.2,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 35,
+        "has_shelter": true
+      },
+      "local": {
+        "terrain": "TUNDRA",
+        "air_temp_c": 5.5,
+        "water_availability": 0.22,
+        "vegetation_biomass": 0.37
+      },
+      "action": {
+        "action": "MOVE_S"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -2.457,
+          "energy": -1.9109999999999998,
+          "fatigue": 1.9109999999999998,
+          "core_temp": -0.06711314911985973
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 77,
+              "y": 10
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 17,
+              "y": 38
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 18,
+              "y": 57
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 46,
+              "y": 12
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 57,
+              "y": 19
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 67,
+              "y": 25
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 35,
+      "time": {
+        "day": 81,
+        "hour": 17
+      },
+      "agent": {
+        "pos": {
+          "x": 42,
+          "y": 31
+        },
+        "hydration": 11.0,
+        "energy": 17.3,
+        "core_temp_c": 33.3,
+        "fatigue": 70.1,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 36,
+        "has_shelter": true
+      },
+      "local": {
+        "terrain": "TUNDRA",
+        "air_temp_c": 4.7,
+        "water_availability": 0.22,
+        "vegetation_biomass": 0.37
+      },
+      "action": {
+        "action": "DRINK"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": true,
+        "hazard_events": [],
+        "delta": {
+          "hydration_gain": 5.3899928419184215,
+          "hydration": -1.0530000000000002,
+          "energy": -0.8190000000000001,
+          "fatigue": 0.8190000000000001,
+          "core_temp": -0.06898450307848013
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 76,
+              "y": 10
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 18,
+              "y": 38
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 18,
+              "y": 56
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 46,
+              "y": 13
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 56,
+              "y": 19
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 66,
+              "y": 25
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 36,
+      "time": {
+        "day": 81,
+        "hour": 18
+      },
+      "agent": {
+        "pos": {
+          "x": 42,
+          "y": 31
+        },
+        "hydration": 15.3,
+        "energy": 16.5,
+        "core_temp_c": 33.3,
+        "fatigue": 70.9,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 37,
+        "has_shelter": true
+      },
+      "local": {
+        "terrain": "TUNDRA",
+        "air_temp_c": 1.9,
+        "water_availability": 0.22,
+        "vegetation_biomass": 0.37
+      },
+      "action": {
+        "action": "DRINK"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": true,
+        "hazard_events": [],
+        "delta": {
+          "hydration_gain": 5.390395522354853,
+          "hydration": -1.0530000000000002,
+          "energy": -0.8190000000000001,
+          "fatigue": 0.8190000000000001,
+          "core_temp": -0.0755360959884178
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 75,
+              "y": 10
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 19,
+              "y": 38
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 18,
+              "y": 55
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 46,
+              "y": 14
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 56,
+              "y": 19
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 65,
+              "y": 25
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 37,
+      "time": {
+        "day": 81,
+        "hour": 19
+      },
+      "agent": {
+        "pos": {
+          "x": 42,
+          "y": 31
+        },
+        "hydration": 19.7,
+        "energy": 15.6,
+        "core_temp_c": 33.2,
+        "fatigue": 71.7,
+        "injury": 0.0,
+        "infection": 0.0,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 38,
+        "has_shelter": true
+      },
+      "local": {
+        "terrain": "TUNDRA",
+        "air_temp_c": 1.7,
+        "water_availability": 0.22,
+        "vegetation_biomass": 0.37
+      },
+      "action": {
+        "action": "DRINK"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration_gain": 5.390797995835488,
+          "hydration": -1.0530000000000002,
+          "energy": -0.8190000000000001,
+          "fatigue": 0.8190000000000001,
+          "core_temp": -0.0757169127742175
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 74,
+              "y": 10
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 20,
+              "y": 38
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 18,
+              "y": 54
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 46,
+              "y": 15
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 57,
+              "y": 19
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 65,
+              "y": 25
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 38,
+      "time": {
+        "day": 81,
+        "hour": 20
+      },
+      "agent": {
+        "pos": {
+          "x": 42,
+          "y": 31
+        },
+        "hydration": 24.0,
+        "energy": 12.3,
+        "core_temp_c": 33.1,
+        "fatigue": 72.5,
+        "injury": 13.7,
+        "infection": 2.6,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 39,
+        "has_shelter": true
+      },
+      "local": {
+        "terrain": "TUNDRA",
+        "air_temp_c": -0.7,
+        "water_availability": 0.22,
+        "vegetation_biomass": 0.37
+      },
+      "action": {
+        "action": "DRINK"
+      },
+      "events": {
+        "encounter": "True",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration_gain": 5.391200262153268,
+          "hydration": -1.0530000000000002,
+          "energy": -0.8190000000000001,
+          "fatigue": 0.8190000000000001,
+          "core_temp": -0.0814336784368977
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 73,
+              "y": 10
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 21,
+              "y": 38
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 19,
+              "y": 54
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 46,
+              "y": 16
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 57,
+              "y": 19
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 66,
+              "y": 25
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 39,
+      "time": {
+        "day": 81,
+        "hour": 21
+      },
+      "agent": {
+        "pos": {
+          "x": 42,
+          "y": 31
+        },
+        "hydration": 28.3,
+        "energy": 11.5,
+        "core_temp_c": 33.0,
+        "fatigue": 73.3,
+        "injury": 13.7,
+        "infection": 2.6,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 40,
+        "has_shelter": true
+      },
+      "local": {
+        "terrain": "TUNDRA",
+        "air_temp_c": -2.9,
+        "water_availability": 0.22,
+        "vegetation_biomass": 0.37
+      },
+      "action": {
+        "action": "DRINK"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration_gain": 5.391602321101248,
+          "hydration": -1.0530000000000002,
+          "energy": -0.8190000000000001,
+          "fatigue": 0.8190000000000001,
+          "core_temp": -0.08653916285907903
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 72,
+              "y": 10
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 22,
+              "y": 38
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 20,
+              "y": 54
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 46,
+              "y": 17
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 56,
+              "y": 19
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 65,
+              "y": 25
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 40,
+      "time": {
+        "day": 81,
+        "hour": 22
+      },
+      "agent": {
+        "pos": {
+          "x": 42,
+          "y": 31
+        },
+        "hydration": 26.8,
+        "energy": 17.6,
+        "core_temp_c": 32.9,
+        "fatigue": 74.5,
+        "injury": 13.7,
+        "infection": 2.6,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 41,
+        "has_shelter": true
+      },
+      "local": {
+        "terrain": "TUNDRA",
+        "air_temp_c": -3.4,
+        "water_availability": 0.22,
+        "vegetation_biomass": 0.27
+      },
+      "action": {
+        "action": "FORAGE"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "energy_gain": 7.37496485765874,
+          "hydration": -1.5210000000000004,
+          "energy": -1.1829999999999998,
+          "fatigue": 1.1829999999999998,
+          "core_temp": -0.08751151657000864
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 71,
+              "y": 10
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 23,
+              "y": 38
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 21,
+              "y": 54
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 46,
+              "y": 18
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 56,
+              "y": 19
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 65,
+              "y": 25
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 41,
+      "time": {
+        "day": 81,
+        "hour": 23
+      },
+      "agent": {
+        "pos": {
+          "x": 42,
+          "y": 31
+        },
+        "hydration": 25.3,
+        "energy": 21.8,
+        "core_temp_c": 32.8,
+        "fatigue": 75.7,
+        "injury": 13.7,
+        "infection": 2.6,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 42,
+        "has_shelter": true
+      },
+      "local": {
+        "terrain": "TUNDRA",
+        "air_temp_c": -4.1,
+        "water_availability": 0.22,
+        "vegetation_biomass": 0.17
+      },
+      "action": {
+        "action": "FORAGE"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "energy_gain": 5.3765938751883,
+          "hydration": -1.5210000000000004,
+          "energy": -1.1829999999999998,
+          "fatigue": 1.1829999999999998,
+          "core_temp": -0.08892976642239385
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 70,
+              "y": 10
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 24,
+              "y": 38
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 22,
+              "y": 54
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 46,
+              "y": 19
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 57,
+              "y": 19
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 66,
+              "y": 25
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 42,
+      "time": {
+        "day": 82,
+        "hour": 0
+      },
+      "agent": {
+        "pos": {
+          "x": 41,
+          "y": 31
+        },
+        "hydration": 23.2,
+        "energy": 20.2,
+        "core_temp_c": 32.8,
+        "fatigue": 77.3,
+        "injury": 13.7,
+        "infection": 2.6,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 43,
+        "has_shelter": true
+      },
+      "local": {
+        "terrain": "DESERT",
+        "air_temp_c": 18.4,
+        "water_availability": 0.17,
+        "vegetation_biomass": 0.23
+      },
+      "action": {
+        "action": "MOVE_W"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -2.106,
+          "energy": -1.6379999999999997,
+          "fatigue": 1.6379999999999997,
+          "core_temp": -0.034664561563692055
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 70,
+              "y": 10
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 25,
+              "y": 38
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 23,
+              "y": 54
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 45,
+              "y": 19
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 57,
+              "y": 19
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 67,
+              "y": 25
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 43,
+      "time": {
+        "day": 82,
+        "hour": 1
+      },
+      "agent": {
+        "pos": {
+          "x": 41,
+          "y": 30
+        },
+        "hydration": 20.7,
+        "energy": 18.3,
+        "core_temp_c": 32.8,
+        "fatigue": 79.3,
+        "injury": 13.7,
+        "infection": 2.6,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 44,
+        "has_shelter": true
+      },
+      "local": {
+        "terrain": "DESERT",
+        "air_temp_c": 18.6,
+        "water_availability": 0.13,
+        "vegetation_biomass": 0.1
+      },
+      "action": {
+        "action": "MOVE_N"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -2.457,
+          "energy": -1.9109999999999998,
+          "fatigue": 1.9109999999999998,
+          "core_temp": -0.03405743793261752
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 71,
+              "y": 10
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 25,
+              "y": 37
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 24,
+              "y": 54
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 44,
+              "y": 19
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 56,
+              "y": 19
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 68,
+              "y": 25
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 44,
+      "time": {
+        "day": 82,
+        "hour": 2
+      },
+      "agent": {
+        "pos": {
+          "x": 41,
+          "y": 30
+        },
+        "hydration": 22.9,
+        "energy": 17.5,
+        "core_temp_c": 32.7,
+        "fatigue": 80.1,
+        "injury": 13.7,
+        "infection": 2.6,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 45,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "DESERT",
+        "air_temp_c": 18.6,
+        "water_availability": 0.13,
+        "vegetation_biomass": 0.1
+      },
+      "action": {
+        "action": "DRINK"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration_gain": 3.2384448567141435,
+          "hydration": -1.0530000000000002,
+          "energy": -0.8190000000000001,
+          "fatigue": 0.8190000000000001,
+          "core_temp": -0.11316795883113076
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 71,
+              "y": 9
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 25,
+              "y": 36
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 25,
+              "y": 54
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 43,
+              "y": 19
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 56,
+              "y": 19
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 69,
+              "y": 25
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 45,
+      "time": {
+        "day": 82,
+        "hour": 3
+      },
+      "agent": {
+        "pos": {
+          "x": 41,
+          "y": 30
+        },
+        "hydration": 24.6,
+        "energy": 16.7,
+        "core_temp_c": 32.6,
+        "fatigue": 80.9,
+        "injury": 13.7,
+        "infection": 2.6,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 46,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "DESERT",
+        "air_temp_c": 21.6,
+        "water_availability": 0.11,
+        "vegetation_biomass": 0.1
+      },
+      "action": {
+        "action": "DRINK"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration_gain": 2.6838912283754066,
+          "hydration": -1.0530000000000002,
+          "energy": -0.8190000000000001,
+          "fatigue": 0.8190000000000001,
+          "core_temp": -0.0885927317065621
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 71,
+              "y": 8
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 25,
+              "y": 36
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 25,
+              "y": 55
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 42,
+              "y": 19
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 57,
+              "y": 19
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 70,
+              "y": 25
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 46,
+      "time": {
+        "day": 82,
+        "hour": 4
+      },
+      "agent": {
+        "pos": {
+          "x": 41,
+          "y": 29
+        },
+        "hydration": 22.1,
+        "energy": 14.7,
+        "core_temp_c": 32.5,
+        "fatigue": 82.8,
+        "injury": 13.7,
+        "infection": 2.6,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 47,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "DESERT",
+        "air_temp_c": 24.2,
+        "water_availability": 0.06,
+        "vegetation_biomass": 0.11
+      },
+      "action": {
+        "action": "MOVE_N"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "hydration": -2.457,
+          "energy": -1.9109999999999998,
+          "fatigue": 1.9109999999999998,
+          "core_temp": -0.06701461802043904
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 71,
+              "y": 7
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 25,
+              "y": 37
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 25,
+              "y": 56
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 41,
+              "y": 19
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 57,
+              "y": 19
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 71,
+              "y": 25
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 47,
+      "time": {
+        "day": 82,
+        "hour": 5
+      },
+      "agent": {
+        "pos": {
+          "x": 41,
+          "y": 29
+        },
+        "hydration": 20.6,
+        "energy": 15.8,
+        "core_temp_c": 32.5,
+        "fatigue": 84.0,
+        "injury": 13.7,
+        "infection": 2.6,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 48,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "DESERT",
+        "air_temp_c": 28.0,
+        "water_availability": 0.03,
+        "vegetation_biomass": 0.01
+      },
+      "action": {
+        "action": "FORAGE"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [],
+        "delta": {
+          "energy_gain": 2.2284510252533307,
+          "hydration": -1.5210000000000004,
+          "energy": -1.1829999999999998,
+          "fatigue": 1.1829999999999998,
+          "core_temp": -0.03608595663177263
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 71,
+              "y": 6
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 25,
+              "y": 38
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 25,
+              "y": 57
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 40,
+              "y": 19
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 56,
+              "y": 19
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 72,
+              "y": 25
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 48,
+      "time": {
+        "day": 82,
+        "hour": 6
+      },
+      "agent": {
+        "pos": {
+          "x": 41,
+          "y": 28
+        },
+        "hydration": 17.4,
+        "energy": 13.9,
+        "core_temp_c": 32.5,
+        "fatigue": 85.9,
+        "injury": 13.7,
+        "infection": 2.6,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 49,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "DESERT",
+        "air_temp_c": 32.4,
+        "water_availability": 0.0,
+        "vegetation_biomass": 0.0
+      },
+      "action": {
+        "action": "MOVE_N"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [
+          "Heat stress: extra hydration drain 0.4"
+        ],
+        "delta": {
+          "hydration": -2.7043221370488184,
+          "energy": -1.9109999999999998,
+          "fatigue": 1.9109999999999998,
+          "core_temp": -0.0007498031618255823
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 71,
+              "y": 5
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 25,
+              "y": 39
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 25,
+              "y": 58
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 39,
+              "y": 19
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 56,
+              "y": 19
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 73,
+              "y": 25
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    },
+    {
+      "t": 49,
+      "time": {
+        "day": 82,
+        "hour": 7
+      },
+      "agent": {
+        "pos": {
+          "x": 41,
+          "y": 27
+        },
+        "hydration": 13.1,
+        "energy": 12.0,
+        "core_temp_c": 32.5,
+        "fatigue": 87.8,
+        "injury": 13.7,
+        "infection": 2.6,
+        "alive": true,
+        "cause_of_death": "ALIVE",
+        "age_steps": 50,
+        "has_shelter": false
+      },
+      "local": {
+        "terrain": "DESERT",
+        "air_temp_c": 34.1,
+        "water_availability": 0.0,
+        "vegetation_biomass": 0.36
+      },
+      "action": {
+        "action": "MOVE_N"
+      },
+      "events": {
+        "encounter": "False",
+        "rain": false,
+        "hazard_events": [
+          "Heat stress: extra hydration drain 1.5"
+        ],
+        "delta": {
+          "hydration": -2.887745596398751,
+          "energy": -1.9109999999999998,
+          "fatigue": 1.9109999999999998,
+          "core_temp": 0.013365692136540758
+        },
+        "hunters": [
+          {
+            "id": 0,
+            "pos": {
+              "x": 71,
+              "y": 4
+            },
+            "detection_radius": 3,
+            "is_chasing": false
+          },
+          {
+            "id": 1,
+            "pos": {
+              "x": 25,
+              "y": 40
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 2,
+            "pos": {
+              "x": 25,
+              "y": 59
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          },
+          {
+            "id": 3,
+            "pos": {
+              "x": 38,
+              "y": 19
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 4,
+            "pos": {
+              "x": 57,
+              "y": 19
+            },
+            "detection_radius": 4,
+            "is_chasing": false
+          },
+          {
+            "id": 5,
+            "pos": {
+              "x": 74,
+              "y": 25
+            },
+            "detection_radius": 5,
+            "is_chasing": false
+          }
+        ],
+        "trophy_found": false
+      }
+    }
+  ],
+  "summary": {
+    "survived_steps": 50,
+    "survived_hours": 50.0,
+    "survived_days": 2.1,
+    "cause_of_death": "ALIVE",
+    "final_pos": {
+      "x": 41,
+      "y": 27
+    },
+    "trophy_found": false,
+    "outcome": "RUNNING"
+  }
+}

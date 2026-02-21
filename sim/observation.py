@@ -21,6 +21,7 @@ def build_observation(
     visible_hunters: list[dict] | None = None,
     hunter_sighting_history: list[list[dict]] | None = None,
     trophy_hint: dict | None = None,
+    include_world_snapshot: bool = False,
 ) -> dict:
     """Build the observation dict that gets sent to the agent."""
     from sim.dynamics import get_time_info
@@ -89,6 +90,19 @@ def build_observation(
     # Trophy hints
     if trophy_hint:
         obs["trophy"] = trophy_hint
+
+    # World snapshot for swarm agents (numpy array references, read-only)
+    if include_world_snapshot:
+        obs["world_snapshot"] = {
+            "width": world.w,
+            "height": world.h,
+            "movement_cost": world.movement_cost,
+            "water_availability": world.water_availability,
+            "vegetation_biomass": world.vegetation_biomass,
+            "wildlife_risk": world.wildlife_risk,
+            "water_mask": world.water_mask,
+            "elevation": world.elevation,
+        }
 
     return obs
 

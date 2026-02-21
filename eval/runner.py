@@ -20,8 +20,18 @@ from sim.env import Environment
 logger = logging.getLogger(__name__)
 
 
-def make_agent(agent_type: str, seed: int = 0, config: Config | None = None) -> BaseAgent:
-    """Factory for agent creation."""
+def make_agent(
+    agent_type: str,
+    seed: int = 0,
+    config: Config | None = None,
+    provider_override: str | None = None,
+) -> BaseAgent:
+    """Factory for agent creation.
+
+    Args:
+        provider_override: Force a specific LLM provider ("gemini" or "openai").
+            Overrides the config's llm_provider setting.
+    """
     if agent_type == "random":
         return RandomAgent(seed=seed)
     elif agent_type == "heuristic":
@@ -29,12 +39,31 @@ def make_agent(agent_type: str, seed: int = 0, config: Config | None = None) -> 
     elif agent_type == "llm":
         from agents.llm_agent import LLMAgent
         cfg = config.agent if config else None
+
+        # Provider: CLI override > config > default
+        provider = provider_override or (cfg.llm_provider if cfg else "gemini")
+        # Pick matching model for the provider
+        model_map = {"gemini": "gemini-2.0-flash", "openai": "gpt-4o-mini"}
+        model = model_map.get(provider, cfg.llm_model if cfg else "gpt-4o-mini")
+
         return LLMAgent(
-            provider=cfg.llm_provider if cfg else "openai",
-            model=cfg.llm_model if cfg else "gpt-4o-mini",
+            provider=provider,
+            model=model,
             max_retries=cfg.llm_max_retries if cfg else 2,
             temperature=cfg.llm_temperature if cfg else 0.7,
         )
+    elif agent_type == "pso":
+        from agents.pso_agent import PSOAgent
+        return PSOAgent(seed=seed, config=config)
+    elif agent_type == "gwo":
+        from agents.gwo_agent import GWOAgent
+        return GWOAgent(seed=seed, config=config)
+    elif agent_type == "woa":
+        from agents.woa_agent import WOAAgent
+        return WOAAgent(seed=seed, config=config)
+    elif agent_type == "aco":
+        from agents.aco_agent import ACOAgent
+        return ACOAgent(seed=seed, config=config)
     else:
         raise ValueError(f"Unknown agent type: {agent_type}")
 
@@ -45,18 +74,32 @@ def run_episode(
     agent: BaseAgent,
     headless: bool = True,
     replay_path: str | None = None,
+    record_path: str | None = None,
 ) -> dict[str, Any]:
-    """Run a single episode. Returns replay data dict."""
+    """Run a single episode. Returns replay data dict.
+
+    Args:
+        record_path: If set, record video and save to this path.
+            Supports .mp4, .gif, .avi, .webm.
+            Recording only works with visual mode (headless=False).
+    """
     env = Environment(config, seed)
     renderer = None
+
+    # Enable world snapshot for swarm agents
+    if hasattr(agent, 'get_clone_positions'):
+        env.include_world_snapshot = True
 
     if not headless:
         from render.pygame_renderer import PygameRenderer
         renderer = PygameRenderer(config, env.world)
+        if record_path:
+            renderer.start_recording()
 
     step = 0
     last_action = ""
     last_events: list[str] = []
+    clone_positions: list[tuple[int, int]] | None = None
 
     try:
         while step < config.sim.max_steps and env.organism.alive and not env.trophy_won:
@@ -78,12 +121,16 @@ def run_episode(
                     last_action, last_events,
                     hunters=hunters_for_render if hunters_for_render else None,
                     trophy_pos=trophy_pos,
+                    clone_positions=clone_positions,
                 )
 
             # Get observation and act
             obs = env.get_observation()
             action_result = agent.act(obs)
             action = action_result.action
+
+            # Query clone positions from swarm agents
+            clone_positions = agent.get_clone_positions()
 
             # Step environment
             result = env.step(action)
@@ -110,7 +157,16 @@ def run_episode(
                 last_action, last_events,
                 hunters=hunters_for_render if hunters_for_render else None,
                 trophy_pos=trophy_pos,
+                clone_positions=clone_positions,
             )
+
+            # Save recording if active
+            if record_path:
+                renderer.stop_recording()
+                saved = renderer.save_video(record_path)
+                if saved:
+                    logger.info(f"Video saved to {saved}")
+
             import time
             time.sleep(1.0)
             renderer.close()

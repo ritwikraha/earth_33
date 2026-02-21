@@ -123,6 +123,13 @@ class FogOfWarConfig(BaseModel):
     explored_dim_factor: float = 0.4
 
 
+class SwarmConfig(BaseModel):
+    """Configuration for swarm/bio-inspired optimization agents."""
+    population_size: int = 10
+    search_radius: int = 30
+    inner_iterations: int = 3
+
+
 # ── Top-level config ───────────────────────────────────────────────────
 
 class Config(BaseModel):
@@ -136,6 +143,7 @@ class Config(BaseModel):
     trophy: TrophyConfig = Field(default_factory=TrophyConfig)
     difficulty: DifficultyConfig = Field(default_factory=DifficultyConfig)
     fog_of_war: FogOfWarConfig = Field(default_factory=FogOfWarConfig)
+    swarm: SwarmConfig = Field(default_factory=SwarmConfig)
 
 
 def load_config(path: str | Path | None = None, overrides: dict[str, Any] | None = None) -> Config:

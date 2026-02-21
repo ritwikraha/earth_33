@@ -21,10 +21,27 @@ def main() -> None:
     parser.add_argument("--config", type=str, default=None, help="Path to YAML config file")
     parser.add_argument("--seed", type=int, default=42, help="Random seed")
     parser.add_argument("--agent", type=str, default="heuristic",
-                        choices=["random", "heuristic", "llm"])
+                        choices=["random", "heuristic", "llm",
+                                 "pso", "gwo", "woa", "aco"])
     parser.add_argument("--headless", action="store_true", help="Run without pygame window")
     parser.add_argument("--max-steps", type=int, default=None, help="Override max steps")
+    parser.add_argument("--provider", type=str, default=None,
+                        choices=["gemini", "openai"],
+                        help="Force a specific LLM provider (only used with --agent llm)")
+    parser.add_argument("--record", type=str, nargs="?", const="auto", default=None,
+                        help="Record video. Pass a path (e.g. runs/demo.mp4) or omit for "
+                             "auto-timestamped file (runs/TIMESTAMP_gameplay.mp4). "
+                             "Requires visual mode (no --headless).")
     args = parser.parse_args()
+
+    # Validate: --record requires visual mode
+    if args.record and args.headless:
+        parser.error("--record requires visual mode (cannot use with --headless)")
+
+    # Auto-generate timestamped recording path
+    if args.record == "auto":
+        ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+        args.record = f"runs/{ts}_gameplay.mp4"
 
     logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
@@ -33,7 +50,8 @@ def main() -> None:
         overrides["sim"] = {"max_steps": args.max_steps}
 
     config = load_config(args.config, overrides)
-    agent = make_agent(args.agent, seed=args.seed, config=config)
+    agent = make_agent(args.agent, seed=args.seed, config=config,
+                       provider_override=args.provider)
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     replay_path = f"runs/{timestamp}_seed{args.seed}.json"
@@ -47,6 +65,7 @@ def main() -> None:
         config, args.seed, agent,
         headless=args.headless,
         replay_path=replay_path,
+        record_path=args.record,
     )
 
     metrics = compute_metrics(replay_data)

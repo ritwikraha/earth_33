@@ -95,8 +95,10 @@ TROPHY_COLOR = (255, 215, 0)
 TROPHY_GLOW_ALPHA = 50
 
 # Fog of war
-FOG_UNEXPLORED_ALPHA = 240
-FOG_EXPLORED_BASE_ALPHA = 150
+# Unexplored: 40% visible (60% dark overlay)
+FOG_UNEXPLORED_ALPHA = 153
+# Explored: fully visible (no overlay)
+FOG_EXPLORED_BASE_ALPHA = 0
 
 # Grid
 GRID_ALPHA = 25

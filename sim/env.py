@@ -43,6 +43,9 @@ class Environment:
         )
         self._trophy_won: bool = False
 
+        # Swarm agent world snapshot flag
+        self.include_world_snapshot: bool = False
+
         # Replay logger
         self.replay = ReplayLogger(seed, config.model_dump())
 
@@ -77,6 +80,7 @@ class Environment:
             visible_hunters=visible_hunters,
             hunter_sighting_history=self.hunter_sighting_history,
             trophy_hint=trophy_hint,
+            include_world_snapshot=self.include_world_snapshot,
         )
 
     def step(self, action: ActionType) -> dict:

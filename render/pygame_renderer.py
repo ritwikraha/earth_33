@@ -2,10 +2,14 @@
 
 from __future__ import annotations
 
+import logging
 import math
+import os
 from typing import Any
 
 import numpy as np
+
+logger = logging.getLogger(__name__)
 
 from config_io.config import Config
 from config_io.schema import Terrain
@@ -145,6 +149,7 @@ class PygameRenderer:
         last_events: list[str] | None = None,
         hunters: list[dict] | None = None,
         trophy_pos: tuple[int, int] | None = None,
+        clone_positions: list[tuple[int, int]] | None = None,
     ) -> None:
         """Render one frame."""
         pg = _pg()
@@ -161,17 +166,17 @@ class PygameRenderer:
         if self.overlay_mode != self.OVERLAY_NONE:
             self._draw_overlay()
 
-        # 4. Trophy (drawn before fog so it's hidden in fog)
-        if trophy_pos:
-            self._draw_trophy(trophy_pos[0], trophy_pos[1], organism.x, organism.y)
+        # 4. Fog of war (drawn before hunters/trophy so they render on top)
+        if self.fog_enabled:
+            self._draw_fog_of_war(organism.x, organism.y)
 
-        # 5. Hunters (drawn before fog so they're hidden in fog)
+        # 5. Hunters (always visible, even through fog)
         if hunters:
             self._draw_hunters(hunters, organism.x, organism.y)
 
-        # 6. Fog of war (on top of everything except agent/trail and HUD)
-        if self.fog_enabled:
-            self._draw_fog_of_war(organism.x, organism.y)
+        # 6. Trophy (always visible on map)
+        if trophy_pos:
+            self._draw_trophy(trophy_pos[0], trophy_pos[1], organism.x, organism.y)
 
         # 7. Trail
         self.trail.append((organism.x, organism.y))
@@ -179,14 +184,20 @@ class PygameRenderer:
             self.trail = self.trail[-self.trail_length:]
         self._draw_trail()
 
+        # 7.5. Swarm clones (faded copies of organism, under the real agent)
+        if clone_positions:
+            self._draw_clones(clone_positions)
+
         # 8. Agent (pulsing, on top of fog)
         self._draw_agent_pulsing(organism.x, organism.y)
 
         # 9. HUD
         self._draw_hud(organism, step, time_info, last_action, last_events or [],
-                       hunters=hunters, trophy_pos=trophy_pos)
+                       hunters=hunters, trophy_pos=trophy_pos,
+                       clone_count=len(clone_positions) if clone_positions else 0)
 
         pg.display.flip()
+        self._capture_frame()
         self.clock.tick(self.fps)
 
     def _draw_overlay(self) -> None:
@@ -238,49 +249,53 @@ class PygameRenderer:
             for x in range(self.world.w):
                 dist_sq = (x - org_x) ** 2 + (y - org_y) ** 2
                 if dist_sq <= R_sq:
-                    continue  # fully visible
+                    continue  # currently visible — full clarity
                 elif (x, y) in self.explored_cells:
-                    # Previously seen: dimmed
-                    alpha = int(255 * (1.0 - self.fog_dim_factor))
-                    pg.draw.rect(fog_surf, (0, 0, 0, alpha),
-                                 (x * cs, y * cs, cs, cs))
+                    # Previously explored — fully revealed, no overlay
+                    continue
                 else:
-                    # Never seen: fully dark
+                    # Never seen — 40% visible (dimmed, terrain shows through)
                     pg.draw.rect(fog_surf, (15, 15, 20, FOG_UNEXPLORED_ALPHA),
                                  (x * cs, y * cs, cs, cs))
 
         self.screen.blit(fog_surf, (0, 0))
 
     def _draw_hunters(self, hunters: list[dict], org_x: int, org_y: int) -> None:
-        """Draw hunter NPCs with detection radius rings."""
+        """Draw hunter NPCs with filled detection radius circles.
+
+        Hunters are always visible on the map (even through fog).
+        Detection radius is shown as a filled semi-transparent circle (50% opacity).
+        """
         pg = _pg()
         cs = self.cell_size
 
         for h in hunters:
             hx = h["pos"]["x"]
             hy = h["pos"]["y"]
-
-            # If fog enabled, only draw if in visible range
-            if self.fog_enabled:
-                dist_sq = (hx - org_x) ** 2 + (hy - org_y) ** 2
-                if dist_sq > self.fog_radius ** 2:
-                    continue
-
             cx = hx * cs + cs // 2
             cy = hy * cs + cs // 2
+            is_chasing = h.get("is_chasing", False)
 
-            # Detection radius ring (semi-transparent red)
+            # Detection radius — filled circle at 50% visibility
             det_radius = h.get("detection_radius", 5)
             radius_px = det_radius * cs
-            ring_surf = pg.Surface((radius_px * 2 + 4, radius_px * 2 + 4), pg.SRCALPHA)
+            size = radius_px * 2 + 4
+            radius_surf = pg.Surface((size, size), pg.SRCALPHA)
+            # 50% opacity filled circle: alpha = 128
+            fill_color = (255, 60, 60, 128) if is_chasing else (255, 50, 50, 80)
             pg.draw.circle(
-                ring_surf, (255, 50, 50, HUNTER_RADIUS_ALPHA),
+                radius_surf, fill_color,
+                (radius_px + 2, radius_px + 2), radius_px,
+            )
+            # Solid edge ring on top
+            edge_color = (255, 30, 30, 180) if is_chasing else (255, 50, 50, 120)
+            pg.draw.circle(
+                radius_surf, edge_color,
                 (radius_px + 2, radius_px + 2), radius_px, 2,
             )
-            self.screen.blit(ring_surf, (cx - radius_px - 2, cy - radius_px - 2))
+            self.screen.blit(radius_surf, (cx - radius_px - 2, cy - radius_px - 2))
 
             # Hunter body
-            is_chasing = h.get("is_chasing", False)
             color = HUNTER_CHASING_COLOR if is_chasing else HUNTER_COLOR
             pg.draw.circle(self.screen, color, (cx, cy), cs // 2 + 1)
             pg.draw.circle(self.screen, (0, 0, 0), (cx, cy), cs // 2 + 1, 1)
@@ -293,15 +308,9 @@ class PygameRenderer:
                          (cx - half, cy + half), (cx + half, cy - half), 2)
 
     def _draw_trophy(self, tx: int, ty: int, org_x: int, org_y: int) -> None:
-        """Draw the trophy with a pulsing golden glow."""
+        """Draw the trophy with a pulsing golden glow. Always visible on map."""
         pg = _pg()
         cs = self.cell_size
-
-        # If fog enabled, only draw if visible
-        if self.fog_enabled:
-            dist_sq = (tx - org_x) ** 2 + (ty - org_y) ** 2
-            if dist_sq > self.fog_radius ** 2:
-                return
 
         cx = tx * cs + cs // 2
         cy = ty * cs + cs // 2
@@ -348,6 +357,53 @@ class PygameRenderer:
         pg.draw.circle(self.screen, (r_val, g_val, b_val), (cx, cy), radius)
         pg.draw.circle(self.screen, (0, 0, 0), (cx, cy), radius, 1)
 
+    def _draw_clones(self, clone_positions: list[tuple[int, int]]) -> None:
+        """Draw semi-transparent faded copies of the organism at clone positions."""
+        pg = _pg()
+        cs = self.cell_size
+        radius = max(3, cs // 2)  # same size as real agent
+
+        # Pulsing color matching agent but faded
+        pulse = 0.5 + 0.5 * math.sin(self._frame_count * 0.15)
+        r_val = int(255 - 55 * pulse)
+        g_val = int(255 - 55 * pulse)
+        b_val = int(50 * pulse)
+        clone_alpha = 140  # ~55% opacity — clearly visible but faded
+
+        # Surface size for each clone (body + glow)
+        clone_size = radius * 2 + 8
+        center = clone_size // 2
+
+        for cx, cy in clone_positions:
+            px = cx * cs + cs // 2
+            py = cy * cs + cs // 2
+
+            clone_surf = pg.Surface((clone_size, clone_size), pg.SRCALPHA)
+
+            # Glow ring
+            glow_r = radius + 3
+            pg.draw.circle(
+                clone_surf, (r_val, g_val, b_val, 50),
+                (center, center), glow_r,
+            )
+
+            # Clone body — filled circle
+            pg.draw.circle(
+                clone_surf, (r_val, g_val, b_val, clone_alpha),
+                (center, center), radius,
+            )
+
+            # Visible outline
+            pg.draw.circle(
+                clone_surf, (255, 255, 200, 90),
+                (center, center), radius, 1,
+            )
+
+            self.screen.blit(
+                clone_surf,
+                (px - center, py - center),
+            )
+
     def _draw_trail(self) -> None:
         pg = _pg()
         cs = self.cell_size
@@ -368,6 +424,7 @@ class PygameRenderer:
         events: list[str],
         hunters: list[dict] | None = None,
         trophy_pos: tuple[int, int] | None = None,
+        clone_count: int = 0,
     ) -> None:
         pg = _pg()
         hud_x = self.map_w
@@ -444,6 +501,11 @@ class PygameRenderer:
                 text(f"  Nearest: {nd} cells{chase_txt}", (255, 150, 150), small=True)
             y_off += 3
 
+        # Swarm clone info
+        if clone_count > 0:
+            text(f"Swarm: {clone_count} clones", (180, 220, 255))
+            y_off += 3
+
         # Trophy info
         if trophy_pos:
             tx, ty = trophy_pos
@@ -475,6 +537,128 @@ class PygameRenderer:
         overlay_names = ["None", "Temperature", "Water", "Vegetation",
                          "Wildlife", "Shelter", "Elevation"]
         text(f"Current: {overlay_names[self.overlay_mode]}", (200, 200, 100), small=True)
+
+    # ── Recording ──────────────────────────────────────────────────
+
+    def start_recording(self) -> None:
+        """Begin capturing frames for video export."""
+        self._recording = True
+        self._frames: list[np.ndarray] = []
+        logger.info("Recording started")
+
+    def stop_recording(self) -> None:
+        """Stop capturing frames."""
+        self._recording = False
+        logger.info(f"Recording stopped ({len(self._frames)} frames captured)")
+
+    def _capture_frame(self) -> None:
+        """Capture the current screen surface as a numpy array."""
+        if not getattr(self, "_recording", False):
+            return
+        pg = _pg()
+        # Grab only the game area (screen) as a 3D numpy array (H, W, 3)
+        raw = pg.surfarray.array3d(self.screen)
+        # pygame gives (W, H, 3), transpose to (H, W, 3) for standard image format
+        frame = np.transpose(raw, (1, 0, 2)).copy()
+        self._frames.append(frame)
+
+    def save_video(self, output_path: str, fps: int | None = None) -> str:
+        """Save captured frames as a video file (MP4 or GIF).
+
+        Supports:
+          - .mp4  — uses imageio-ffmpeg (best quality, small files)
+          - .gif  — uses imageio (larger files, universal support)
+
+        Returns the path of the saved file.
+        """
+        frames = getattr(self, "_frames", [])
+        if not frames:
+            logger.warning("No frames captured, nothing to save")
+            return ""
+
+        if fps is None:
+            fps = self.fps
+
+        ext = os.path.splitext(output_path)[1].lower()
+        os.makedirs(os.path.dirname(output_path) or ".", exist_ok=True)
+
+        try:
+            import imageio
+        except ImportError:
+            logger.error(
+                "imageio is required for video export. "
+                "Install it with: pip install imageio imageio-ffmpeg"
+            )
+            return ""
+
+        saved_path = output_path
+
+        if ext == ".gif":
+            saved_path = self._save_gif(imageio, frames, output_path, fps)
+        elif ext in (".mp4", ".avi", ".mov", ".webm"):
+            saved_path = self._save_mp4(imageio, frames, output_path, fps, ext)
+        else:
+            logger.error(f"Unsupported video format: {ext}")
+            return ""
+
+        if saved_path and os.path.exists(saved_path):
+            n = len(frames)
+            duration = n / fps
+            size_mb = os.path.getsize(saved_path) / (1024 * 1024)
+            logger.info(
+                f"Video saved: {saved_path} "
+                f"({n} frames, {duration:.1f}s, {size_mb:.1f}MB)"
+            )
+            return saved_path
+
+        logger.error("Failed to save video")
+        return ""
+
+    @staticmethod
+    def _save_gif(imageio, frames: list, output_path: str, fps: int) -> str:
+        """Save frames as an animated GIF. Returns saved path."""
+        # Sample frames to keep GIF size reasonable
+        skip = max(1, len(frames) // 300)
+        sampled = frames[::skip]
+        # imageio GIF plugin expects duration in seconds per frame
+        duration_per_frame = (1.0 / fps) * skip
+
+        try:
+            # imageio.mimwrite works across v2 and v3 for multi-frame output
+            imageio.mimwrite(output_path, sampled,
+                             duration=duration_per_frame, loop=0)
+        except (TypeError, AttributeError):
+            # Fallback: use get_writer frame-by-frame
+            writer = imageio.get_writer(output_path, mode="I",
+                                        duration=duration_per_frame, loop=0)
+            for frame in sampled:
+                writer.append_data(frame)
+            writer.close()
+
+        return output_path
+
+    @staticmethod
+    def _save_mp4(imageio, frames: list, output_path: str,
+                  fps: int, ext: str) -> str:
+        """Save frames as an MP4/AVI video. Returns saved path."""
+        try:
+            writer = imageio.get_writer(
+                output_path, fps=fps,
+                codec="libx264" if ext == ".mp4" else None,
+            )
+            for frame in frames:
+                writer.append_data(frame)
+            writer.close()
+            return output_path
+        except Exception as e:
+            logger.warning(f"Video export failed ({e}), falling back to GIF")
+            gif_path = output_path.rsplit(".", 1)[0] + ".gif"
+            return PygameRenderer._save_gif(imageio, frames, gif_path, fps)
+
+    @property
+    def frame_count(self) -> int:
+        """Number of frames captured so far."""
+        return len(getattr(self, "_frames", []))
 
     def close(self) -> None:
         _pg().quit()

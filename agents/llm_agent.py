@@ -63,9 +63,14 @@ def _load_env() -> None:
     """Load .env file from project root if available."""
     try:
         from dotenv import load_dotenv
-        env_path = Path(__file__).resolve().parent.parent / ".env"
-        if env_path.exists():
-            load_dotenv(env_path)
+        # Try relative to this file first, then CWD
+        candidates = [
+            Path(__file__).resolve().parent.parent / ".env",
+            Path.cwd() / ".env",
+        ]
+        for env_path in candidates:
+            if env_path.exists():
+                load_dotenv(env_path, override=False)
     except ImportError:
         pass
 
@@ -118,11 +123,21 @@ class LLMAgent(BaseAgent):
             actions=", ".join(action_mask),
         )
         user_msg = json.dumps(observation, indent=2)
+        original_user_msg = user_msg  # preserve for provider switching
+
+        if not self._providers:
+            logger.warning("No LLM providers configured, using heuristic fallback")
+            self.fallback_count += 1
+            return self._heuristic_fallback.act(observation)
 
         # Try each provider in the chain
         for backend in self._providers:
             if backend.name in self._quota_exhausted_providers:
+                logger.debug(f"Skipping {backend.name} (quota exhausted)")
                 continue
+
+            logger.info(f"Trying provider: {backend.name}/{backend.model}")
+            user_msg = original_user_msg  # reset for each provider
 
             for attempt in range(1 + self.max_retries):
                 try:
@@ -132,19 +147,20 @@ class LLMAgent(BaseAgent):
                     self._active_provider = backend
                     return action
 
-                except _QuotaExhaustedError:
+                except _QuotaExhaustedError as qe:
                     # This provider's quota is done — mark it and move to next
                     self._quota_exhausted_providers.add(backend.name)
                     self.provider_switches += 1
                     logger.warning(
-                        f"{backend.name} quota exhausted, "
+                        f"{backend.name} quota exhausted ({qe}), "
                         f"switching to next provider"
                     )
                     break  # break retry loop, try next provider
 
                 except Exception as e:
                     logger.warning(
-                        f"{backend.name} attempt {attempt + 1} failed: {e}"
+                        f"{backend.name} attempt {attempt + 1}/{1 + self.max_retries} "
+                        f"failed: {type(e).__name__}: {e}"
                     )
                     if attempt < self.max_retries:
                         user_msg = (
@@ -156,12 +172,20 @@ class LLMAgent(BaseAgent):
                     # fall through to next provider
             else:
                 # All retries for this provider failed (non-quota errors)
-                # Try next provider
+                logger.warning(
+                    f"{backend.name} exhausted all {1 + self.max_retries} retries, "
+                    f"trying next provider"
+                )
                 continue
 
         # All providers exhausted — heuristic fallback
         self.fallback_count += 1
-        logger.warning("All LLM providers failed, using heuristic fallback")
+        active_names = [p.name for p in self._providers]
+        exhausted = list(self._quota_exhausted_providers)
+        logger.warning(
+            f"All LLM providers failed (chain={active_names}, "
+            f"quota_exhausted={exhausted}), using heuristic fallback"
+        )
         return self._heuristic_fallback.act(observation)
 
     def _parse_response(self, raw: str, action_mask: list[str]) -> AgentAction:
@@ -303,13 +327,18 @@ class _ProviderBackend:
                     {"role": "user", "content": user_msg},
                 ],
                 temperature=self.temperature,
-                max_tokens=200,
+                max_tokens=300,
                 response_format={"type": "json_object"},
             )
             return resp.choices[0].message.content.strip()
         except Exception as e:
-            err_str = str(e)
-            if "429" in err_str or "insufficient_quota" in err_str:
+            err_str = str(e).lower()
+            quota_signals = [
+                "429", "insufficient_quota", "rate_limit_exceeded",
+                "billing", "exceeded your current quota",
+                "account is not active",
+            ]
+            if any(sig in err_str for sig in quota_signals):
                 raise _QuotaExhaustedError(f"OpenAI quota exhausted: {e}")
             raise
 

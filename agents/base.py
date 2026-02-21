@@ -18,3 +18,7 @@ class BaseAgent(ABC):
     def reset(self) -> None:
         """Optional: reset agent state between episodes."""
         pass
+
+    def get_clone_positions(self) -> list[tuple[int, int]] | None:
+        """Return virtual clone/particle positions for rendering. None if N/A."""
+        return None

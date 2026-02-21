@@ -1,4 +1,4 @@
-# Earth33 Survival — LLM-as-Organism in Realistic 2D Earth Environments
+# Earth2D Survival — LLM-as-Organism in Realistic 2D Earth Environments
 
 ```
     ███████╗ █████╗ ██████╗ ████████╗██╗  ██╗ ██████╗ ██████╗
@@ -210,6 +210,7 @@ cp .env.example .env
 | `pyyaml` | Config file parsing |
 | `google-genai` | Gemini LLM provider |
 | `openai` | OpenAI fallback provider (optional) |
+| `imageio` | Video/GIF recording (optional) |
 
 ---
 
@@ -249,6 +250,34 @@ python -m cli evaluate --config configs/hunt.yaml --agent heuristic --seeds 0-9 
 
 ```bash
 python -m cli replay runs/20260219_001132_seed42.json
+```
+
+### Record Video
+
+```bash
+# Record as MP4 (requires: pip install imageio imageio-ffmpeg)
+python -m cli run_episode --config configs/hunt.yaml --agent heuristic --record runs/gameplay.mp4
+
+# Record as GIF (lighter dependency, larger files)
+python -m cli run_episode --config configs/hunt.yaml --agent llm --record runs/demo.gif
+```
+
+```
+    ┌──────────────────────────────────────────────────────────┐
+    │                  VIDEO RECORDING                         │
+    │                                                          │
+    │   run_episode ──┬── pygame render ──> screen             │
+    │                 └── capture frame ──> numpy array         │
+    │                                          │               │
+    │                          on exit:        v               │
+    │                                    ┌──────────┐          │
+    │                                    │ imageio  │          │
+    │                                    │ encode   │          │
+    │                                    └──┬───┬───┘          │
+    │                                 .mp4  │   │  .gif        │
+    │                                       v   v              │
+    │                                   saved to disk          │
+    └──────────────────────────────────────────────────────────┘
 ```
 
 ### Keyboard Controls (Visual Mode)

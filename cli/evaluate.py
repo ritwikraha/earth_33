@@ -30,7 +30,8 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Batch evaluate Earth2D survival")
     parser.add_argument("--config", type=str, default=None, help="Path to YAML config file")
     parser.add_argument("--agent", type=str, default="heuristic",
-                        choices=["random", "heuristic", "llm"])
+                        choices=["random", "heuristic", "llm",
+                                 "pso", "gwo", "woa", "aco"])
     parser.add_argument("--seeds", type=str, default="0-9", help="Seed range, e.g. '0-9' or '1,3,5'")
     parser.add_argument("--output", type=str, default="runs", help="Output directory")
     args = parser.parse_args()
