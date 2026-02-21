@@ -93,6 +93,9 @@ def run_episode(
     if not headless:
         from render.pygame_renderer import PygameRenderer
         renderer = PygameRenderer(config, env.world)
+        # Set clone visibility radius for swarm agents
+        if hasattr(agent, 'get_clone_positions'):
+            renderer._clone_search_radius = max(1, config.swarm.search_radius // 10)
         if record_path:
             renderer.start_recording()
 

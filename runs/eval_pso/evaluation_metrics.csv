@@ -1,0 +1,11 @@
+survived_steps,survived_hours,survived_days,cause_of_death,unique_cells_visited,exploration_rate,avg_risk_exposure,near_death_count,encounter_count,invalid_action_count,trophy_found,hunter_death,seed
+34,34.0,1.42,DEHYDRATION,29,0.8529,0.0,6,3,0,False,False,0
+29,29.0,1.21,DEHYDRATION,23,0.7931,0.0,3,4,0,False,False,1
+44,44.0,1.83,DEHYDRATION,23,0.5227,0.0,11,2,0,False,False,2
+64,64.0,2.67,DEHYDRATION,21,0.3281,0.0,16,2,0,False,False,3
+60,60.0,2.5,STARVATION,22,0.3667,0.0,20,2,0,False,False,4
+35,35.0,1.46,DEHYDRATION,30,0.8571,0.0,6,4,0,False,False,5
+21,21.0,0.88,STARVATION,18,0.8571,0.0,3,2,0,False,False,6
+51,51.0,2.12,HUNTED,22,0.4314,0.0,13,3,0,False,True,7
+10,10.0,0.42,HUNTED,10,1.0,0.0,0,0,0,False,True,8
+72,72.0,3.0,DEHYDRATION,29,0.4028,0.0,18,7,0,False,False,9

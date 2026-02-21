@@ -88,15 +88,6 @@ class GWOAgent(SwarmAgentBase):
                 # New position: average of three leader influences
                 self._wolves[i] = (X1 + X2 + X3) / 3.0
 
-            # Random scatter: some wolves explore independently
-            for i in range(N):
-                if self.rng.random() < 0.2:  # 20% chance to scout randomly
-                    if self._world_w > 0:
-                        self._wolves[i] = [
-                            self.rng.integers(0, self._world_w),
-                            self.rng.integers(0, self._world_h),
-                        ]
-
             # Clamp to world bounds
             if self._world_w > 0:
                 self._wolves[:, 0] = np.clip(

@@ -1,0 +1,11 @@
+survived_steps,survived_hours,survived_days,cause_of_death,unique_cells_visited,exploration_rate,avg_risk_exposure,near_death_count,encounter_count,invalid_action_count,trophy_found,hunter_death,seed
+40,40.0,1.67,HUNTED,12,0.3,0.0,0,3,0,False,True,0
+123,123.0,5.12,STARVATION,14,0.1138,0.0,16,12,0,False,False,1
+97,97.0,4.04,STARVATION,26,0.268,0.0,9,6,0,False,False,2
+131,131.0,5.46,STARVATION,19,0.145,0.0,16,7,0,False,False,3
+47,47.0,1.96,STARVATION,23,0.4894,0.0,4,2,0,False,False,4
+57,57.0,2.38,HUNTED,11,0.193,0.0,0,4,0,False,True,5
+44,44.0,1.83,HUNTED,18,0.4091,0.0,0,6,0,False,True,6
+108,108.0,4.5,STARVATION,21,0.1944,0.0,17,8,0,False,False,7
+91,91.0,3.79,STARVATION,20,0.2198,0.0,8,10,0,False,False,8
+137,137.0,5.71,HYPOTHERMIA,10,0.073,0.0,0,8,0,False,False,9

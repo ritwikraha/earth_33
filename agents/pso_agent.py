@@ -25,10 +25,10 @@ class PSOAgent(SwarmAgentBase):
         super().__init__(pop, radius, seed, config)
 
         # PSO hyper-parameters
-        self._w = 0.9       # inertia weight (high to maintain spread)
-        self._c1 = 1.2      # cognitive coefficient
-        self._c2 = 1.0      # social coefficient (lower to reduce convergence)
-        self._max_vel = 8.0  # velocity clamp (high for wide map traversal)
+        self._w = 0.7       # inertia weight
+        self._c1 = 1.5      # cognitive coefficient (personal best pull)
+        self._c2 = 2.0      # social coefficient (global best pull)
+        self._max_vel = 3.0  # velocity clamp
 
         # Per-particle state (initialised lazily)
         self._positions: np.ndarray | None = None  # (N, 2) float
@@ -56,9 +56,6 @@ class PSOAgent(SwarmAgentBase):
             self._gbest = np.array([org_x, org_y], dtype=float)
             self._gbest_fit = -1e9
 
-        # Reset global best each step to avoid stale convergence
-        self._gbest_fit = -1e9
-
         for _ in range(self._inner_iters):
             # Evaluate fitness
             for i in range(N):
@@ -81,11 +78,9 @@ class PSOAgent(SwarmAgentBase):
 
             cognitive = self._c1 * r1 * (self._pbest - self._positions)
             social = self._c2 * r2 * (self._gbest[None, :] - self._positions)
-            # Random exploration component to maintain diversity
-            exploration = self.rng.uniform(-2.0, 2.0, size=(N, 2))
 
             self._velocities = (
-                self._w * self._velocities + cognitive + social + exploration
+                self._w * self._velocities + cognitive + social
             )
             # Clamp velocity
             self._velocities = np.clip(
@@ -103,18 +98,18 @@ class PSOAgent(SwarmAgentBase):
                     self._positions[:, 1], 0, self._world_h - 1,
                 )
 
-        # Respawn particles stuck at boundaries back to random positions
+        # Gentle re-centering: mild pull toward organism to keep swarm relevant
+        org_pos = np.array([org_x, org_y], dtype=float)
+        self._positions += 0.05 * (org_pos[None, :] - self._positions)
+
+        # Clamp positions after re-centering
         if self._world_w > 0:
-            for i in range(N):
-                px, py = self._positions[i]
-                at_edge = (px <= 1 or px >= self._world_w - 2 or
-                           py <= 1 or py >= self._world_h - 2)
-                if at_edge and self.rng.random() < 0.3:
-                    self._positions[i] = [
-                        self.rng.integers(0, self._world_w),
-                        self.rng.integers(0, self._world_h),
-                    ]
-                    self._velocities[i] = self.rng.uniform(-2, 2, size=2)
+            self._positions[:, 0] = np.clip(
+                self._positions[:, 0], 0, self._world_w - 1,
+            )
+            self._positions[:, 1] = np.clip(
+                self._positions[:, 1], 0, self._world_h - 1,
+            )
 
         # Store clone positions for renderer
         self._clone_positions = [

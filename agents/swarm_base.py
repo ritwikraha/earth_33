@@ -165,15 +165,10 @@ class SwarmAgentBase(BaseAgent):
         hydration = agent.get("hydration", 50.0)
         energy = agent.get("energy", 50.0)
 
-        # ── 1. Exploration bonus — encourage spatial diversity ────────
         dx = x - org_x
         dy = y - org_y
-        dist_from_org = math.sqrt(dx * dx + dy * dy)
-        # Small bonus for exploration, but capped so it never dominates
-        # other fitness components (prevents all clones rushing to corners)
-        score += min(dist_from_org, 20.0) * 0.1
 
-        # ── 2. Trophy attraction ─────────────────────────────────────
+        # ── 1. Trophy attraction ─────────────────────────────────────
         if np.linalg.norm(self._trophy_dir) > 0.01:
             trophy_score = (
                 dx * self._trophy_dir[0] + dy * self._trophy_dir[1]
@@ -306,26 +301,17 @@ class SwarmAgentBase(BaseAgent):
     def _init_population_around(
         self, org_x: int, org_y: int, pop_size: int,
     ) -> np.ndarray:
-        """Scatter initial positions across the map around the organism.
+        """Initialise population within search_radius of the organism.
 
-        Clones are spread widely — some near the organism for local
-        exploitation, others far away for global exploration.
+        All clones start within the search radius so the swarm algorithm
+        can converge from a coherent starting formation.
         """
         positions = np.zeros((pop_size, 2), dtype=float)
-        w = max(self._world_w, 1)
-        h = max(self._world_h, 1)
+        r = self.search_radius
         for i in range(pop_size):
-            if i < pop_size // 3:
-                # First third: near the organism (local search)
-                dx = self.rng.integers(-self.search_radius // 3, self.search_radius // 3 + 1)
-                dy = self.rng.integers(-self.search_radius // 3, self.search_radius // 3 + 1)
-                positions[i] = self._clamp(org_x + dx, org_y + dy)
-            else:
-                # Rest: scattered across the full map (global exploration)
-                positions[i] = [
-                    self.rng.integers(0, w),
-                    self.rng.integers(0, h),
-                ]
+            dx = self.rng.integers(-r, r + 1)
+            dy = self.rng.integers(-r, r + 1)
+            positions[i] = self._clamp(org_x + dx, org_y + dy)
         return positions
 
     # ── Abstract method ──────────────────────────────────────────────

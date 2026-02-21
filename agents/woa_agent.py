@@ -46,9 +46,6 @@ class WOAAgent(SwarmAgentBase):
             self._whales = self._init_population_around(org_x, org_y, N)
             self._best_whale = np.array([org_x, org_y], dtype=float)
 
-        # Reset best each step to re-evaluate (avoids stale convergence)
-        self._best_fit = -1e9
-
         for _ in range(self._inner_iters):
             # Evaluate fitness and find best
             for i in range(N):
@@ -88,15 +85,6 @@ class WOAAgent(SwarmAgentBase):
                     self._whales[i] = (
                         D_prime * exp_term * cos_term + self._best_whale
                     )
-
-            # Random exploration: some whales scout independently
-            for i in range(N):
-                if self.rng.random() < 0.25:  # 25% chance to explore
-                    if self._world_w > 0:
-                        self._whales[i] = [
-                            self.rng.integers(0, self._world_w),
-                            self.rng.integers(0, self._world_h),
-                        ]
 
             # Clamp
             if self._world_w > 0:

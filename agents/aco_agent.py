@@ -107,13 +107,8 @@ class ACOAgent(SwarmAgentBase):
         ant_finals: list[tuple[int, int]] = []
 
         for i in range(N):
-            if i < N // 3:
-                # First third start from organism (local search)
-                sx, sy = org_x, org_y
-            else:
-                # Rest start from random map positions (global exploration)
-                sx = int(self.rng.integers(0, self._world_w))
-                sy = int(self.rng.integers(0, self._world_h))
+            # All ants start from organism — pheromone trails guide exploration
+            sx, sy = org_x, org_y
             path, fit = self._ant_walk(sx, sy, org_x, org_y, observation)
             ant_finals.append(path[-1])
             if fit > best_fit:

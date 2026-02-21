@@ -186,7 +186,8 @@ class PygameRenderer:
 
         # 7.5. Swarm clones (faded copies of organism, under the real agent)
         if clone_positions:
-            self._draw_clones(clone_positions)
+            clone_radius = getattr(self, '_clone_search_radius', 3)
+            self._draw_clones(clone_positions, clone_radius)
 
         # 8. Agent (pulsing, on top of fog)
         self._draw_agent_pulsing(organism.x, organism.y)
@@ -357,11 +358,19 @@ class PygameRenderer:
         pg.draw.circle(self.screen, (r_val, g_val, b_val), (cx, cy), radius)
         pg.draw.circle(self.screen, (0, 0, 0), (cx, cy), radius, 1)
 
-    def _draw_clones(self, clone_positions: list[tuple[int, int]]) -> None:
-        """Draw semi-transparent faded copies of the organism at clone positions."""
+    def _draw_clones(
+        self,
+        clone_positions: list[tuple[int, int]],
+        search_radius: int = 3,
+    ) -> None:
+        """Draw semi-transparent faded copies of the organism at clone positions.
+
+        Each clone has a visibility/search radius circle (cyan) similar to
+        hunter detection radius circles (red).
+        """
         pg = _pg()
         cs = self.cell_size
-        radius = max(3, cs // 2)  # same size as real agent
+        body_radius = max(3, cs // 2)  # same size as real agent
 
         # Pulsing color matching agent but faded
         pulse = 0.5 + 0.5 * math.sin(self._frame_count * 0.15)
@@ -370,18 +379,36 @@ class PygameRenderer:
         b_val = int(50 * pulse)
         clone_alpha = 140  # ~55% opacity — clearly visible but faded
 
-        # Surface size for each clone (body + glow)
-        clone_size = radius * 2 + 8
-        center = clone_size // 2
-
         for cx, cy in clone_positions:
             px = cx * cs + cs // 2
             py = cy * cs + cs // 2
 
+            # ── Visibility / search radius circle (cyan) ──────────
+            radius_px = search_radius * cs
+            size = radius_px * 2 + 4
+            radius_surf = pg.Surface((size, size), pg.SRCALPHA)
+            # Filled semi-transparent circle
+            pg.draw.circle(
+                radius_surf, (80, 200, 255, 40),
+                (radius_px + 2, radius_px + 2), radius_px,
+            )
+            # Solid edge ring
+            pg.draw.circle(
+                radius_surf, (80, 200, 255, 80),
+                (radius_px + 2, radius_px + 2), radius_px, 1,
+            )
+            self.screen.blit(
+                radius_surf,
+                (px - radius_px - 2, py - radius_px - 2),
+            )
+
+            # ── Clone body ────────────────────────────────────────
+            clone_size = body_radius * 2 + 8
+            center = clone_size // 2
             clone_surf = pg.Surface((clone_size, clone_size), pg.SRCALPHA)
 
             # Glow ring
-            glow_r = radius + 3
+            glow_r = body_radius + 3
             pg.draw.circle(
                 clone_surf, (r_val, g_val, b_val, 50),
                 (center, center), glow_r,
@@ -390,13 +417,13 @@ class PygameRenderer:
             # Clone body — filled circle
             pg.draw.circle(
                 clone_surf, (r_val, g_val, b_val, clone_alpha),
-                (center, center), radius,
+                (center, center), body_radius,
             )
 
             # Visible outline
             pg.draw.circle(
                 clone_surf, (255, 255, 200, 90),
-                (center, center), radius, 1,
+                (center, center), body_radius, 1,
             )
 
             self.screen.blit(
