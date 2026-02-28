@@ -240,8 +240,71 @@ class HuggingFaceAgent(BaseAgent):
         self.model.eval()
         logger.info(f"Model loaded: {model_name}")
 
+    def _compact_observation(self, observation: dict) -> str:
+        """Convert observation to a compact text format to fit small model context windows."""
+        agent = observation.get("agent", {})
+        local = observation.get("local", {})
+        nearby = observation.get("nearby", {})
+        time_info = observation.get("time", {})
+        trophy = observation.get("trophy", {})
+        hunters = observation.get("visible_hunters", [])
+        action_mask = observation.get("action_mask", [])
+
+        lines = []
+        lines.append(f"Step {observation.get('timestep', 0)}, "
+                      f"Day {time_info.get('day_of_year', 0)} Hour {time_info.get('hour', 0)}")
+
+        # Vitals (most critical info)
+        lines.append(f"Pos: ({agent.get('x', agent.get('pos', {}).get('x', 0))}, "
+                      f"{agent.get('y', agent.get('pos', {}).get('y', 0))})")
+        lines.append(f"Hydration: {agent.get('hydration', 0):.0f}%")
+        lines.append(f"Energy: {agent.get('energy', 0):.0f}%")
+        lines.append(f"Core Temp: {agent.get('core_temp_c', 37):.1f}C")
+        lines.append(f"Fatigue: {agent.get('fatigue', 0):.0f}%")
+        lines.append(f"Injury: {agent.get('injury', 0):.0f}%")
+        lines.append(f"Infection: {agent.get('infection', 0):.0f}%")
+        lines.append(f"Shelter: {agent.get('has_shelter', False)}")
+
+        # Local terrain
+        lines.append(f"Terrain: {local.get('terrain', '?')}, "
+                      f"Air: {local.get('air_temp_c', 0):.1f}C, "
+                      f"Water: {local.get('water_availability', 0):.1f}, "
+                      f"Food: {local.get('vegetation_biomass', 0):.1f}, "
+                      f"Wildlife risk: {local.get('wildlife_risk', 0):.2f}")
+
+        # Nearby resources
+        water_info = nearby.get("nearest_water", {})
+        if water_info:
+            lines.append(f"Nearest water: dist={water_info.get('distance', '?')}, "
+                          f"dir={water_info.get('direction', '?')}")
+        shelter_info = nearby.get("best_shelter", {})
+        if shelter_info and shelter_info.get("distance", -1) >= 0:
+            lines.append(f"Best shelter: dist={shelter_info.get('distance', '?')}, "
+                          f"quality={shelter_info.get('shelter_quality', 0):.1f}")
+
+        # Hunters
+        if hunters:
+            for h in hunters:
+                hpos = h.get("pos", {})
+                lines.append(f"Hunter #{h.get('id', '?')}: dist={h.get('distance', '?')}, "
+                              f"chasing={h.get('is_chasing', False)}")
+        else:
+            lines.append("No hunters visible.")
+
+        # Trophy
+        if trophy:
+            lines.append(f"Trophy: dist={trophy.get('trophy_distance_approx', '?')}, "
+                          f"temp={trophy.get('trophy_temperature', '?')}, "
+                          f"dir={trophy.get('trophy_direction', '?')}")
+
+        # Valid actions
+        lines.append(f"Valid actions: {', '.join(action_mask)}")
+
+        return "\n".join(lines)
+
     def act(self, observation: dict) -> AgentAction:
         import torch
+        import traceback
 
         action_mask = observation.get(
             "action_mask", [a.value for a in ActionType]
@@ -269,11 +332,11 @@ class HuggingFaceAgent(BaseAgent):
                 )
             memory_text = "\n".join(lines) + "\n\n"
 
-        # Strip world_snapshot (numpy arrays for swarm agents, not JSON-serializable)
-        obs_for_llm = {k: v for k, v in observation.items() if k != "world_snapshot"}
+        # Build compact observation text (avoids huge JSON blowing up context)
+        obs_text = self._compact_observation(observation)
 
         # Build user message
-        user_msg = memory_text + icl_text + json.dumps(obs_for_llm, indent=2)
+        user_msg = memory_text + icl_text + obs_text
 
         # Build chat messages
         messages = [
@@ -296,6 +359,20 @@ class HuggingFaceAgent(BaseAgent):
             )
 
         input_ids = input_ids.to(self.model.device)
+        input_len = input_ids.shape[1]
+        logger.debug(f"Input tokens: {input_len}")
+
+        # Truncate if too long for model context
+        max_ctx = getattr(self.model.config, "max_position_embeddings", 4096)
+        if input_len + self.max_new_tokens > max_ctx:
+            trim_to = max_ctx - self.max_new_tokens - 16
+            if trim_to > 0:
+                input_ids = input_ids[:, -trim_to:]
+                logger.debug(f"Truncated input from {input_len} to {trim_to} tokens")
+            else:
+                logger.warning(f"Context too small: {max_ctx}, falling back to heuristic")
+                self.fallback_count += 1
+                return self._heuristic_fallback.act(observation)
 
         # Generate
         try:
@@ -329,7 +406,8 @@ class HuggingFaceAgent(BaseAgent):
             return action
 
         except Exception as e:
-            logger.warning(f"HuggingFace generation failed: {e}")
+            logger.warning(f"HuggingFace generation failed: {type(e).__name__}: {e}")
+            logger.debug(traceback.format_exc())
             self.fallback_count += 1
             return self._heuristic_fallback.act(observation)
 
