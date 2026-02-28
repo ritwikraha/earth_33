@@ -269,8 +269,11 @@ class HuggingFaceAgent(BaseAgent):
                 )
             memory_text = "\n".join(lines) + "\n\n"
 
+        # Strip world_snapshot (numpy arrays for swarm agents, not JSON-serializable)
+        obs_for_llm = {k: v for k, v in observation.items() if k != "world_snapshot"}
+
         # Build user message
-        user_msg = memory_text + icl_text + json.dumps(observation, indent=2)
+        user_msg = memory_text + icl_text + json.dumps(obs_for_llm, indent=2)
 
         # Build chat messages
         messages = [
