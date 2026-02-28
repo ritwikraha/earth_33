@@ -344,21 +344,21 @@ class HuggingFaceAgent(BaseAgent):
             {"role": "user", "content": user_msg},
         ]
 
-        # Tokenize
+        # Tokenize: two-step approach for maximum compatibility
         try:
-            input_ids = self.tokenizer.apply_chat_template(
+            # Step 1: apply chat template to get formatted text
+            prompt_text = self.tokenizer.apply_chat_template(
                 messages,
-                return_tensors="pt",
+                tokenize=False,
                 add_generation_prompt=True,
             )
         except Exception:
             # Fallback for models without chat template
-            prompt = f"System: {system}\n\nUser: {user_msg}\n\nAssistant:"
-            input_ids = self.tokenizer.encode(
-                prompt, return_tensors="pt"
-            )
+            prompt_text = f"System: {system}\n\nUser: {user_msg}\n\nAssistant:"
 
-        input_ids = input_ids.to(self.model.device)
+        # Step 2: tokenize the text — always returns BatchEncoding with .input_ids
+        encoded = self.tokenizer(prompt_text, return_tensors="pt")
+        input_ids = encoded.input_ids.to(self.model.device)
         input_len = input_ids.shape[1]
         logger.debug(f"Input tokens: {input_len}")
 
