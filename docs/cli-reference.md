@@ -74,10 +74,21 @@ python -m cli evaluate --config configs/hunt.yaml --agent llm --seeds 0-99 --out
 ## `replay` — Replay a Saved Episode
 
 ```bash
-python -m cli replay <replay_file.json>
+python -m cli replay --replay <replay_file.json> [--speed SPEED]
 ```
 
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--replay` | `str` | required | Path to replay JSON file. |
+| `--speed` | `float` | `1.0` | Playback speed multiplier. |
+
 Replays a previously saved episode JSON file in the pygame window.
+
+**Example:**
+
+```bash
+python -m cli replay --replay runs/20260308_160558_seed42.json --speed 2.0
+```
 
 ---
 

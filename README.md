@@ -90,7 +90,7 @@ python -m cli evaluate --config configs/hunt.yaml --agent heuristic --seeds 0-9 
 python -m cli run_episode --config configs/hunt.yaml --agent pso --record runs/demo.mp4
 
 # Replay a saved episode
-python -m cli replay runs/20260222_001132_seed42.json
+python -m cli replay --replay runs/20260222_001132_seed42.json
 ```
 
 ---
