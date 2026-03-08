@@ -19,7 +19,7 @@ from render.pygame_renderer import PygameRenderer
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Replay a saved Earth2D episode")
+    parser = argparse.ArgumentParser(description="Replay a saved Earth33 episode")
     parser.add_argument("--replay", type=str, required=True, help="Path to replay JSON")
     parser.add_argument("--speed", type=float, default=1.0, help="Playback speed multiplier")
     args = parser.parse_args()

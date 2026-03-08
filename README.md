@@ -109,10 +109,36 @@ earth_33/
 ├── data/                 # Data ingestion (optional GIS)
 ├── tests/                # Test suite (36 tests)
 ├── docs/                 # Detailed documentation
+├── examples/             # Pre-recorded demo replays
 ├── runs/                 # Episode outputs (gitignored)
 ├── pyproject.toml        # Project metadata & dependencies
 ├── CONTRIBUTING.md       # Contributing guide & test info
 └── README.md
+```
+
+---
+
+## Demo
+
+A pre-recorded replay is included showing a **trophy win** by the Grey Wolf Optimization
+(GWO) swarm agent on `forest.yaml` with seed 52:
+
+```bash
+python -m cli replay --replay examples/demo_gwo_forest.json
+```
+
+**What you'll see** — The GWO agent deploys 8 virtual wolves that explore the grid and
+converge on the trophy location. Over 70 steps (2.9 in-game days), it navigates 56 moves
+across forest terrain, drinks 9 times to manage hydration, forages twice, and rests 3 times
+to recover fatigue. Vitals steadily decline under survival pressure — by the final steps
+hydration is at 24%, energy at 25%, and core temperature has drifted to 31.1C — but the
+swarm finds the trophy just in time. This is one of only 26 trophy wins found across
+2,400 runs (6 agents x 4 configs x 100 seeds).
+
+To reproduce the exact same episode from scratch:
+
+```bash
+python -m cli run_episode --config configs/forest.yaml --agent gwo --seed 52
 ```
 
 ---

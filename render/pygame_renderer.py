@@ -68,7 +68,7 @@ class PygameRenderer:
         self.screen_h = self.map_h
 
         self.screen = pg.display.set_mode((self.screen_w, self.screen_h))
-        pg.display.set_caption("Earth2D Survival")
+        pg.display.set_caption("Earth33 Survival")
         self.clock = pg.time.Clock()
         self.font = pg.font.SysFont("monospace", 14)
         self.font_small = pg.font.SysFont("monospace", 11)
@@ -478,7 +478,7 @@ class PygameRenderer:
             y_off += bar_h + 4
 
         # Title
-        text("EARTH2D SURVIVAL", (255, 220, 100))
+        text("EARTH33 SURVIVAL", (255, 220, 100))
         y_off += 3
 
         # Time

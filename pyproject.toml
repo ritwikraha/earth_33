@@ -1,7 +1,7 @@
 [project]
 name = "earth-33"
 version = "0.1.0"
-description = "Earth2D Survival — LLM-as-Organism in Realistic 2D Earth Environments"
+description = "Earth33 Survival — LLM-as-Organism in Realistic 2D Earth Environments"
 requires-python = ">=3.11"
 dependencies = [
     "numpy>=1.26",
