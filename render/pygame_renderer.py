@@ -682,6 +682,110 @@ class PygameRenderer:
             gif_path = output_path.rsplit(".", 1)[0] + ".gif"
             return PygameRenderer._save_gif(imageio, frames, gif_path, fps)
 
+    # ── Victory screen ─────────────────────────────────────────
+
+    def render_victory(
+        self,
+        organism: OrganismState,
+        step: int,
+        time_info: dict,
+        trophy_pos: tuple[int, int],
+        frame_offset: int = 0,
+        last_action: str = "",
+        last_events: list[str] | None = None,
+        hunters: list[dict] | None = None,
+        clone_positions: list[tuple[int, int]] | None = None,
+    ) -> None:
+        """Render a victory overlay frame on top of the normal game view.
+
+        Call this in a loop with increasing frame_offset to animate
+        the expanding rings.
+        """
+        pg = _pg()
+
+        # Draw normal game frame underneath
+        self.render(
+            organism, step, time_info,
+            last_action, last_events or [],
+            hunters=hunters,
+            trophy_pos=trophy_pos,
+            clone_positions=clone_positions,
+        )
+
+        # Semi-transparent dark overlay
+        overlay = pg.Surface((self.screen_w, self.screen_h), pg.SRCALPHA)
+        overlay.fill((0, 0, 0, 140))
+        self.screen.blit(overlay, (0, 0))
+
+        # Expanding golden rings from trophy position
+        cs = self.cell_size
+        tx, ty = trophy_pos
+        ring_cx = tx * cs + cs // 2
+        ring_cy = ty * cs + cs // 2
+
+        for ring_i in range(3):
+            ring_age = frame_offset - ring_i * 20
+            if ring_age < 0:
+                continue
+            t = ring_age / 60.0
+            radius = int(30 + t * 200)
+            alpha = max(0, int(200 * (1.0 - t)))
+            if alpha <= 0:
+                continue
+            width = max(2, 4 - int(t * 3))
+            ring_surf = pg.Surface((radius * 2 + 4, radius * 2 + 4), pg.SRCALPHA)
+            pg.draw.circle(
+                ring_surf, (255, 220, 80, alpha),
+                (radius + 2, radius + 2), radius, width,
+            )
+            self.screen.blit(
+                ring_surf,
+                (ring_cx - radius - 2, ring_cy - radius - 2),
+            )
+
+        # Golden trophy glow at center (intensified)
+        glow_pulse = 0.5 + 0.5 * math.sin(frame_offset * 0.12)
+        glow_r = int(cs * (2.0 + glow_pulse))
+        glow_surf = pg.Surface((glow_r * 2 + 4, glow_r * 2 + 4), pg.SRCALPHA)
+        pg.draw.circle(
+            glow_surf, (255, 255, 100, int(60 + 40 * glow_pulse)),
+            (glow_r + 2, glow_r + 2), glow_r,
+        )
+        self.screen.blit(glow_surf, (ring_cx - glow_r - 2, ring_cy - glow_r - 2))
+
+        # "TROPHY FOUND!" text — centered on screen
+        font_large = pg.font.SysFont("monospace", 36, bold=True)
+        font_sub = pg.font.SysFont("monospace", 18)
+
+        # Fade in: text appears over first 30 frames
+        text_alpha = min(255, frame_offset * 8)
+
+        title_surf = font_large.render("TROPHY FOUND!", True, (255, 220, 80))
+        title_surf.set_alpha(text_alpha)
+        title_x = (self.map_w - title_surf.get_width()) // 2
+        title_y = self.map_h // 2 - 40
+        self.screen.blit(title_surf, (title_x, title_y))
+
+        days = step / 24.0
+        sub_text = f"Survived {step} steps ({days:.1f} days)"
+        sub_surf = font_sub.render(sub_text, True, (220, 220, 220))
+        sub_surf.set_alpha(text_alpha)
+        sub_x = (self.map_w - sub_surf.get_width()) // 2
+        sub_y = title_y + 50
+        self.screen.blit(sub_surf, (sub_x, sub_y))
+
+        # "Press ESC to close" hint (appears after 60 frames)
+        if frame_offset > 60:
+            hint_surf = font_sub.render("Press ESC to close", True, (160, 160, 160))
+            hint_surf.set_alpha(min(255, (frame_offset - 60) * 6))
+            hint_x = (self.map_w - hint_surf.get_width()) // 2
+            hint_y = sub_y + 40
+            self.screen.blit(hint_surf, (hint_x, hint_y))
+
+        pg.display.flip()
+        self._capture_frame()
+        self.clock.tick(self.fps)
+
     @property
     def frame_count(self) -> int:
         """Number of frames captured so far."""
