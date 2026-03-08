@@ -140,6 +140,51 @@ class PygameRenderer:
                     self.overlay_mode = self.OVERLAY_ELEVATION
         return True
 
+    def _render_scene(
+        self,
+        organism: OrganismState,
+        step: int,
+        time_info: dict,
+        last_action: str = "",
+        last_events: list[str] | None = None,
+        hunters: list[dict] | None = None,
+        trophy_pos: tuple[int, int] | None = None,
+        clone_positions: list[tuple[int, int]] | None = None,
+    ) -> None:
+        """Draw all game layers to the screen buffer without flipping."""
+        self._frame_count += 1
+        self.screen.fill((0, 0, 0))
+
+        self.screen.blit(self._terrain_surface, (0, 0))
+        self.screen.blit(self._grid_surface, (0, 0))
+
+        if self.overlay_mode != self.OVERLAY_NONE:
+            self._draw_overlay()
+
+        if self.fog_enabled:
+            self._draw_fog_of_war(organism.x, organism.y)
+
+        if hunters:
+            self._draw_hunters(hunters, organism.x, organism.y)
+
+        if trophy_pos:
+            self._draw_trophy(trophy_pos[0], trophy_pos[1], organism.x, organism.y)
+
+        self.trail.append((organism.x, organism.y))
+        if len(self.trail) > self.trail_length:
+            self.trail = self.trail[-self.trail_length:]
+        self._draw_trail()
+
+        if clone_positions:
+            clone_radius = getattr(self, '_clone_search_radius', 3)
+            self._draw_clones(clone_positions, clone_radius)
+
+        self._draw_agent_pulsing(organism.x, organism.y)
+
+        self._draw_hud(organism, step, time_info, last_action, last_events or [],
+                       hunters=hunters, trophy_pos=trophy_pos,
+                       clone_count=len(clone_positions) if clone_positions else 0)
+
     def render(
         self,
         organism: OrganismState,
@@ -153,50 +198,10 @@ class PygameRenderer:
     ) -> None:
         """Render one frame."""
         pg = _pg()
-        self._frame_count += 1
-        self.screen.fill((0, 0, 0))
-
-        # 1. Terrain base
-        self.screen.blit(self._terrain_surface, (0, 0))
-
-        # 2. Grid lines
-        self.screen.blit(self._grid_surface, (0, 0))
-
-        # 3. Overlay (if active)
-        if self.overlay_mode != self.OVERLAY_NONE:
-            self._draw_overlay()
-
-        # 4. Fog of war (drawn before hunters/trophy so they render on top)
-        if self.fog_enabled:
-            self._draw_fog_of_war(organism.x, organism.y)
-
-        # 5. Hunters (always visible, even through fog)
-        if hunters:
-            self._draw_hunters(hunters, organism.x, organism.y)
-
-        # 6. Trophy (always visible on map)
-        if trophy_pos:
-            self._draw_trophy(trophy_pos[0], trophy_pos[1], organism.x, organism.y)
-
-        # 7. Trail
-        self.trail.append((organism.x, organism.y))
-        if len(self.trail) > self.trail_length:
-            self.trail = self.trail[-self.trail_length:]
-        self._draw_trail()
-
-        # 7.5. Swarm clones (faded copies of organism, under the real agent)
-        if clone_positions:
-            clone_radius = getattr(self, '_clone_search_radius', 3)
-            self._draw_clones(clone_positions, clone_radius)
-
-        # 8. Agent (pulsing, on top of fog)
-        self._draw_agent_pulsing(organism.x, organism.y)
-
-        # 9. HUD
-        self._draw_hud(organism, step, time_info, last_action, last_events or [],
-                       hunters=hunters, trophy_pos=trophy_pos,
-                       clone_count=len(clone_positions) if clone_positions else 0)
-
+        self._render_scene(
+            organism, step, time_info, last_action, last_events,
+            hunters, trophy_pos, clone_positions,
+        )
         pg.display.flip()
         self._capture_frame()
         self.clock.tick(self.fps)
@@ -703,8 +708,8 @@ class PygameRenderer:
         """
         pg = _pg()
 
-        # Draw normal game frame underneath
-        self.render(
+        # Draw game scene to buffer (no flip yet)
+        self._render_scene(
             organism, step, time_info,
             last_action, last_events or [],
             hunters=hunters,
