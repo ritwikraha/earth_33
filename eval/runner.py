@@ -146,32 +146,60 @@ def run_episode(
 
     finally:
         if renderer is not None:
-            # Show final frame briefly
             from sim.dynamics import get_time_info
-            time_info = get_time_info(step, config)
+            import time as _time
 
+            time_info = get_time_info(step, config)
             hunters_for_render = env.hunter_manager.get_all_hunter_positions()
             trophy_pos = None
             if env.trophy_manager.tcfg.enabled:
                 trophy_pos = (env.trophy_manager.trophy_x, env.trophy_manager.trophy_y)
 
-            renderer.render(
-                env.organism, step, time_info,
-                last_action, last_events,
-                hunters=hunters_for_render if hunters_for_render else None,
-                trophy_pos=trophy_pos,
-                clone_positions=clone_positions,
-            )
+            if env.trophy_won and trophy_pos:
+                # Victory animation: ~4 seconds of expanding rings
+                anim_frames = config.render.fps * 4
+                for f in range(anim_frames):
+                    if not renderer.handle_events():
+                        break
+                    renderer.render_victory(
+                        env.organism, step, time_info, trophy_pos,
+                        frame_offset=f,
+                        last_action=last_action,
+                        last_events=last_events,
+                        hunters=hunters_for_render if hunters_for_render else None,
+                        clone_positions=clone_positions,
+                    )
 
-            # Save recording if active
+                # Hold victory screen until user closes
+                logger.info("Trophy found! Press ESC or close window.")
+                while True:
+                    if not renderer.handle_events():
+                        break
+                    renderer.render_victory(
+                        env.organism, step, time_info, trophy_pos,
+                        frame_offset=anim_frames,
+                        last_action=last_action,
+                        last_events=last_events,
+                        hunters=hunters_for_render if hunters_for_render else None,
+                        clone_positions=clone_positions,
+                    )
+            else:
+                # Normal final frame for non-trophy endings
+                renderer.render(
+                    env.organism, step, time_info,
+                    last_action, last_events,
+                    hunters=hunters_for_render if hunters_for_render else None,
+                    trophy_pos=trophy_pos,
+                    clone_positions=clone_positions,
+                )
+                _time.sleep(1.0)
+
             if record_path:
                 renderer.stop_recording()
                 saved = renderer.save_video(record_path)
                 if saved:
                     logger.info(f"Video saved to {saved}")
 
-            import time
-            time.sleep(1.0)
             renderer.close()
 
     # Finalize

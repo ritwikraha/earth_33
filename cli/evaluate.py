@@ -27,7 +27,7 @@ def parse_seeds(seeds_str: str) -> list[int]:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Batch evaluate Earth2D survival")
+    parser = argparse.ArgumentParser(description="Batch evaluate Earth33 survival")
     parser.add_argument("--config", type=str, default=None, help="Path to YAML config file")
     parser.add_argument("--agent", type=str, default="heuristic",
                         choices=["random", "heuristic", "llm",

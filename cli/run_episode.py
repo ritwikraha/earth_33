@@ -17,7 +17,7 @@ from eval.metrics import compute_metrics
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Run a single Earth2D survival episode")
+    parser = argparse.ArgumentParser(description="Run a single Earth33 survival episode")
     parser.add_argument("--config", type=str, default=None, help="Path to YAML config file")
     parser.add_argument("--seed", type=int, default=42, help="Random seed")
     parser.add_argument("--agent", type=str, default="heuristic",
